@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // رقم واتساب المطعم
     // يجب أن يكون بدون (+) وبدون مسافات
-    const WHATSAPP_NUMBER = "+963946957506";
+    const WHATSAPP_NUMBER = "+963440015220";
 
     // موقع مطعم مولانا برغر
     const RESTAURANT_LOCATION = {
