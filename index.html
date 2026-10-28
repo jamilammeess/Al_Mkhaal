@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKNPFX1ZD3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-SKNPFX1ZD3');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#7C0434">
+
+    <title> ali_baba | مطعم المكحل</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="menu-header">
+    <div class="brand">
+        <img src="images/logo.png" alt="مولانا برغر" class="brand-logo">
+        <div class="brand-text">
+            <h1>بروستد المكحل</h1>
+            <span>Al_MKHAL_CHIKEN</span>
+        </div>
+    </div>
+
+    <div class="header-badge">
+        <span class="badge-dot"></span>
+        طعم يستحق التجربة
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-small-title">AL_MKHAL CHIKEN</span>
+        <h2>القرمشة...<br><strong>على أصولها</strong></h2>
+        <p>
+            دجاج طازج , بطاطا مقلية مقرمشة , شاورما بالطعم العريق
+            لتعيش تجربة طعم مختلفة.
+        </p>
+    </div>
+
+    <div class="hero-image">
+        <div class="hero-glow"></div>
+        <img src="images/hero_logo.png" alt="Mawlana Burger">
+    </div>
+
+    <div class="hero-decoration">ِAL_MKHAAL</div>
+</section>
+
+<nav class="categories">
+    <a href="#burgers" class="category active">
+        <span class="category-icon">🍟</span>
+        <span>الوجبات</span>
+    </a>
+
+    <a href="#meals" class="category">
+        <span class="category-icon">🌯</span>
+        <span>السندويش</span>
+    </a>
+
+
+
+    <a href="#drinks" class="category">
+        <span class="category-icon">🥤</span>
+        <span>المشروبات</span>
+    </a>
+</nav>
+
+<main class="menu-container">
+
+    <section class="menu-section" id="burgers">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">COMPLETE MEALS</span>
+                <h2>الوجبات</h2>
+            </div>
+            <span class="section-number">01</span>
+        </div>
+
+        <div class="products-grid" id="burgersGrid"></div>
+    </section>
+
+    <section class="menu-section" id="meals">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">OUR SPECIAL SANDUWISH</span>
+                <h2>السندويش</h2>
+            </div>
+            <span class="section-number">02</span>
+        </div>
+
+        <div class="products-grid" id="mealsGrid"></div>
+    </section>
+
+    <!-- <section class="menu-section" id="sides">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">OUR SPECIAL DRINKS</span>
+                <h2>المشروبات المميزة</h2>
+            </div>
+            <span class="section-number">03</span>
+        </div>
+
+        <!-- الحفاظ على تصميم المشروبات المميزة الأصلي -->
+        <div class="small-products-grid" id="specialDrinksGrid"></div>
+    <!-- </section> --> 
+
+    <section class="menu-section" id="drinks">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">FRESH DRINKS</span>
+                <h2>المشروبات</h2>
+            </div>
+            <span class="section-number">04</span>
+        </div>
+
+        <!-- الحفاظ على تصميم المشروبات الأصلي -->
+        <div class="drinks-grid" id="drinksGrid"></div>
+    </section>
+
+</main>
+
+<button class="floating-cart" id="floatingCart" type="button" aria-label="فتح سلة الطلب">
+    <span class="cart-icon">🛒</span>
+
+    <div class="cart-button-text">
+        <span>طلبك</span>
+        <small id="cartCount">0 أصناف</small>
+    </div>
+
+    <span class="cart-count-badge" id="cartBadge">0</span>
+</button>
+
+<div class="cart-overlay" id="cartOverlay" aria-hidden="true">
+    <div class="cart-panel" id="cartPanel">
+
+        <div class="cart-header">
+            <div>
+                <span class="cart-title-icon">🛒</span>
+                <div>
+                    <h2>طلبك</h2>
+                    <p>راجع طلبك قبل الإرسال</p>
+                </div>
+            </div>
+
+            <button class="close-cart" id="closeCart" type="button" aria-label="إغلاق السلة">✕</button>
+        </div>
+
+        <div class="order-review-section">
+            <div class="order-review-header">
+                <div class="order-review-icon">🛒</div>
+                <div>
+                    <h3>مراجعة الطلب</h3>
+                    <p>راجع الأصناف والكميات قبل إتمام الطلب</p>
+                </div>
+            </div>
+
+            <div class="cart-items" id="cartItems"></div>
+
+            <div class="cart-empty" id="cartEmpty">
+                <div class="cart-empty-icon">🛒</div>
+                <h3>سلة الطلب فارغة</h3>
+                <p>لم تقم بإضافة أي صنف بعد</p>
+                <span>اختر ما تشتهيه من القائمة وأضفه إلى طلبك</span>
+            </div>
+        </div>
+
+        <div class="customer-form" id="customerForm">
+            <h3>بيانات الطلب</h3>
+
+            <div class="form-group">
+                <label for="customerName">👤 الاسم</label>
+                <input type="text" id="customerName" placeholder="اكتب اسمك">
+            </div>
+
+            <div class="form-group">
+                <label for="customerPhone">📱 رقم الهاتف</label>
+                <input type="tel" id="customerPhone" placeholder="مثال: 09XXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label for="customerAddress">📍 العنوان</label>
+                <input type="text" id="customerAddress" placeholder="اكتب عنوان التوصيل">
+            </div>
+
+            <div class="form-group">
+                <label for="customerNotes">📝 ملاحظات على الطلب</label>
+                <textarea id="customerNotes" placeholder="مثال: بدون بصل"></textarea>
+            </div>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>الإجمالي</span>
+                <strong id="cartTotal">0 ل.س</strong>
+            </div>
+
+            <button class="whatsapp-order-btn" id="whatsappOrder" type="button">
+                <span>📱</span>
+                إتمام الطلب عبر واتساب
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer class="menu-footer">
+    <div class="footer-brand">
+        <img src="images/logo2.png" alt="مولانا برغر">
+        <div>
+            <strong>علي بابا</strong>
+            <span>ALI_BABA</span>
+            <span>© ALI_BABA 🤍</span>
+        </div>
+    </div>
+
+   
+
+    <p>
+        للتواصل مع الإدارة عبر الواتساب:
+        <a href="https://wa.me/96340015220" target="_blank" rel="noopener noreferrer">
+            +96340015220
+        </a>
+    </p>
+
+    <span class="footer-copy">شكراً لاختياركم علي بابا 🤍</span>
+</footer>
+
+<script src="js/cart.js"></script>
+
+</body>
+</html>
