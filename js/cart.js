@@ -2160,146 +2160,184 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    async function detectCustomerLocation() {
+/* ==========================================
+   MOBILE-FRIENDLY GEOLOCATION
+   تحديد الموقع على iPhone وAndroid
+========================================== */
 
-        if (isCalculatingDelivery) {
+let isDetectingLocation = false;
 
-            return;
-
-        }
-
-
-        if (!navigator.geolocation) {
-
-            setDeliveryStatus(
-                "المتصفح لا يدعم تحديد الموقع. يرجى استخدام متصفح حديث.",
-                true
-            );
-
-            return;
-
-        }
-
-
-        if (deliveryLocationButton) {
-
-            deliveryLocationButton.disabled =
-                true;
-
-            deliveryLocationButton.textContent =
-                "⏳ جارٍ تحديد الموقع...";
-
-        }
-
-
-        setDeliveryStatus(
-            "يرجى السماح بالوصول إلى موقعك عند ظهور رسالة المتصفح."
-        );
-
-
+function getCurrentPositionAsync(options) {
+    return new Promise(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(
+            resolve,
+            reject,
+            options
+        );
+    });
+}
 
-            async function (position) {
+function getLocationErrorMessage(error) {
+    if (!error) {
+        return "تعذر تحديد موقعك. حاول مرة أخرى.";
+    }
 
-                customerLocation = {
+    switch (error.code) {
+        case 1:
+            return "تم رفض إذن الموقع. افتح إعدادات المتصفح واسمح بالوصول إلى موقعك، ثم أعد المحاولة.";
 
-                    latitude:
-                        position.coords.latitude,
+        case 2:
+            return "الهاتف لم يتمكن من تحديد موقعك. فعّل خدمات الموقع GPS، وتحقق من اتصال الإنترنت.";
 
-                    longitude:
-                        position.coords.longitude,
+        case 3:
+            return "استغرق تحديد الموقع وقتًا طويلًا. انتقل إلى مكان مفتوح وحاول مرة أخرى.";
 
-                    mapUrl:
-                        `https://www.google.com/maps?q=${position.coords.latitude},${position.coords.longitude}`
+        default:
+            return "حدث خطأ أثناء تحديد الموقع. تحقق من إعدادات الهاتف وحاول مجددًا.";
+    }
+}
 
-                };
+async function detectCustomerLocation() {
+    if (isDetectingLocation || isCalculatingDelivery) {
+        return;
+    }
 
+    if (!navigator.geolocation) {
+        setDeliveryStatus(
+            "متصفحك لا يدعم تحديد الموقع. جرّب فتح المنيو في Safari أو Chrome.",
+            true
+        );
+        return;
+    }
 
-                await calculateDeliveryRoute();
+    // تحديد الموقع يحتاج إلى اتصال آمن HTTPS،
+    // باستثناء localhost أثناء التطوير.
+    if (
+        !window.isSecureContext &&
+        location.hostname !== "localhost" &&
+        location.hostname !== "127.0.0.1"
+    ) {
+        setDeliveryStatus(
+            "الموقع مفتوح باتصال غير آمن. افتح رابط المنيو الذي يبدأ بـ https:// ثم حاول مجددًا.",
+            true
+        );
+        return;
+    }
 
+    isDetectingLocation = true;
 
-                if (deliveryLocationButton) {
+    if (deliveryLocationButton) {
+        deliveryLocationButton.disabled = true;
+        deliveryLocationButton.textContent = "⏳ جارٍ تحديد الموقع...";
+    }
 
-                    deliveryLocationButton.disabled =
-                        false;
+    setDeliveryStatus(
+        "جارٍ تحديد موقعك. يرجى السماح بالوصول إلى الموقع وإبقاء الصفحة مفتوحة."
+    );
 
-                    deliveryLocationButton.textContent =
-                        "📍 إعادة تحديد موقعي وحساب التوصيل";
+    // إلغاء نتيجة سابقة حتى لا يُستخدم سعر توصيل قديم.
+    customerLocation = null;
+    deliveryDistanceKm = null;
+    deliveryChargedKm = null;
+    deliveryFee = null;
 
-                }
+    updateDeliverySummary();
+    updateCartCounter();
 
-            },
+    try {
+        let position;
 
-
-            function (error) {
-
-                let message =
-                    "تعذر تحديد موقعك.";
-
-
-                if (
-                    error.code ===
-                    error.PERMISSION_DENIED
-                ) {
-
-                    message =
-                        "لم تسمح بالوصول إلى الموقع. فعّل إذن الموقع من إعدادات المتصفح ثم أعد المحاولة.";
-
-                } else if (
-                    error.code ===
-                    error.POSITION_UNAVAILABLE
-                ) {
-
-                    message =
-                        "موقعك غير متاح حالياً. تحقق من تشغيل خدمة الموقع وحاول مجدداً.";
-
-                } else if (
-                    error.code ===
-                    error.TIMEOUT
-                ) {
-
-                    message =
-                        "استغرق تحديد الموقع وقتاً طويلاً. حاول مجدداً.";
-
-                }
-
-
-                customerLocation = null;
-                deliveryDistanceKm = null;
-                deliveryChargedKm = null;
-                deliveryFee = null;
-
-
-                setDeliveryStatus(
-                    message,
-                    true
-                );
-
-                updateDeliverySummary();
-
-
-                if (deliveryLocationButton) {
-
-                    deliveryLocationButton.disabled =
-                        false;
-
-                    deliveryLocationButton.textContent =
-                        "📍 إعادة محاولة تحديد الموقع";
-
-                }
-
-            },
-
-
-            {
+        try {
+            // المحاولة الأولى: دقة مرتفعة.
+            position = await getCurrentPositionAsync({
                 enableHighAccuracy: true,
-                timeout: 20000,
+                timeout: 30000,
                 maximumAge: 0
+            });
+        } catch (firstError) {
+            // لا نعيد المحاولة إذا رفض المستخدم الإذن.
+            if (firstError && firstError.code === 1) {
+                throw firstError;
             }
 
+            setDeliveryStatus(
+                "لم يُحدَّد الموقع بدقة بعد. جارٍ تجربة طريقة أخرى..."
+            );
+
+            // المحاولة الثانية: قد تكون أنسب لبعض الهواتف.
+            position = await getCurrentPositionAsync({
+                enableHighAccuracy: false,
+                timeout: 25000,
+                maximumAge: 60000
+            });
+        }
+
+        const latitude = Number(position.coords.latitude);
+        const longitude = Number(position.coords.longitude);
+
+        if (
+            !Number.isFinite(latitude) ||
+            !Number.isFinite(longitude) ||
+            latitude < -90 ||
+            latitude > 90 ||
+            longitude < -180 ||
+            longitude > 180
+        ) {
+            throw new Error("الإحداثيات التي أعادها الهاتف غير صالحة.");
+        }
+
+        customerLocation = {
+            latitude: latitude,
+            longitude: longitude,
+            mapUrl:
+                "https://www.google.com/maps?q=" +
+                encodeURIComponent(latitude + "," + longitude)
+        };
+
+        setDeliveryStatus(
+            "تم تحديد موقعك بنجاح. جارٍ حساب مسافة الطريق وأجرة التوصيل..."
         );
 
+        const routeCalculated = await calculateDeliveryRoute();
+
+        if (!routeCalculated) {
+            // لا نحتفظ بموقع غير مكتمل الحساب باعتباره طلبًا جاهزًا.
+            customerLocation = null;
+            deliveryDistanceKm = null;
+            deliveryChargedKm = null;
+            deliveryFee = null;
+
+            updateDeliverySummary();
+            updateCartCounter();
+        }
+    } catch (error) {
+        console.error("Customer location error:", error);
+
+        customerLocation = null;
+        deliveryDistanceKm = null;
+        deliveryChargedKm = null;
+        deliveryFee = null;
+
+        setDeliveryStatus(
+            error && error.code
+                ? getLocationErrorMessage(error)
+                : "تم تحديد الموقع أو بدء العملية، لكن تعذر إكمالها. تحقق من الإنترنت وحاول مجددًا.",
+            true
+        );
+
+        updateDeliverySummary();
+        updateCartCounter();
+    } finally {
+        isDetectingLocation = false;
+
+        if (deliveryLocationButton) {
+            deliveryLocationButton.disabled = false;
+            deliveryLocationButton.textContent =
+                "📍 إعادة تحديد موقعي وحساب التوصيل";
+        }
     }
+}
+
 
 
     async function calculateDeliveryRoute() {
