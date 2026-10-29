@@ -305,6 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let deliverySummaryElement = null;
     let deliveryLocationButton = null;
 
+    
 
     /* =========================
        GOOGLE ANALYTICS
@@ -1548,56 +1549,46 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
-    /* =========================
-       CATEGORY ANALYTICS
-    ========================== */
+  
+/* =========================
+   CATEGORY ANALYTICS + ACTIVE STATE
+========================= */
 
-    const categoryLinks =
-        document.querySelectorAll(
-            ".categories .category"
-        );
+const categoryLinks = document.querySelectorAll(
+    ".categories .category"
+);
 
+categoryLinks.forEach(function (categoryLink) {
 
-    categoryLinks.forEach(
-        function (categoryLink) {
+    categoryLink.addEventListener("click", function () {
 
-            categoryLink.addEventListener(
-                "click",
-                function () {
+        // 1. إزالة التحديد السابق عن جميع التصنيفات
+        categoryLinks.forEach(function (link) {
+            link.classList.remove("active");
+        });
 
-                    const categoryName =
-                        categoryLink
-                            .querySelector("span:last-child");
+        // 2. إبقاء التصنيف الذي ضغط عليه المستخدم محدداً
+        this.classList.add("active");
 
-                    const categoryText =
-                        categoryName
-                            ? categoryName.textContent.trim()
-                            : categoryLink.textContent.trim();
+        // 3. الاحتفاظ بتتبع Google Analytics كما كان
+        const categoryName = this.querySelector("span:last-child");
 
+        const categoryText = categoryName
+            ? categoryName.textContent.trim()
+            : this.textContent.trim();
 
-                    const categoryId =
-                        (
-                            categoryLink.getAttribute("href") ||
-                            ""
-                        ).replace("#", "");
+        const categoryId = (
+            this.getAttribute("href") || ""
+        ).replace("#", "");
 
+        trackEvent("category_click", {
+            category_name: categoryText,
+            category_id: categoryId
+        });
 
-                    trackEvent(
-                        "category_click",
-                        {
-                            category_name:
-                                categoryText,
+    });
 
-                            category_id:
-                                categoryId
-                        }
-                    );
-
-                }
-            );
-
-        }
-    );
+});
 
 
     /* =========================
@@ -2504,7 +2495,7 @@ async function detectCustomerLocation() {
     function buildWhatsAppMessage(customer) {
 
         let message =
-            "🍔 *طلب جديد - مولانا برغر*\n\n";
+            "🍔 *طلب جديد - بروستد المكحل*\n\n";
 
 
         message +=
@@ -2641,7 +2632,7 @@ async function detectCustomerLocation() {
 
 
         message +=
-            "🍔 شكراً لاختياركم مولانا برغر 🤍";
+            " شكراً لاختياركم علي بابا 🤍";
 
 
         return message;
