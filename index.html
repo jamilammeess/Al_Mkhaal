@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -15,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7C0434">
 
-    <title> ali_baba | مطعم المكحل</title>
+    <title>ali_baba | مطعم المكحل</title>
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -59,8 +58,14 @@
     <div class="hero-decoration">ِAL_MKHAAL</div>
 </section>
 
+<!-- شريط الفلترة والأقسام (تم جعل العروض في المرتبة الأولى) -->
 <nav class="categories">
-    <a href="#burgers" class="category active">
+    <a href="#offers" class="category active">
+        <span class="category-icon">🔥</span>
+        <span>العروض</span>
+    </a>
+
+    <a href="#burgers" class="category">
         <span class="category-icon">🍟</span>
         <span>الوجبات</span>
     </a>
@@ -70,8 +75,6 @@
         <span>السندويش</span>
     </a>
 
-
-
     <a href="#drinks" class="category">
         <span class="category-icon">🥤</span>
         <span>المشروبات</span>
@@ -79,6 +82,19 @@
 </nav>
 
 <main class="menu-container">
+
+    <!-- قسم عروض علي بابا المميزة (أول قسم يتم عرضه) -->
+    <section class="menu-section" id="offers">
+        <div class="section-heading">
+            <div>
+                <span class="section-kicker">SPECIAL OFFERS</span>
+                <h2>العروض والحزم الحصرية</h2>
+            </div>
+            <span class="section-number">00</span>
+        </div>
+
+        <div class="products-grid" id="offersGrid"></div>
+    </section>
 
     <section class="menu-section" id="burgers">
         <div class="section-heading">
@@ -104,19 +120,6 @@
         <div class="products-grid" id="mealsGrid"></div>
     </section>
 
-    <!-- <section class="menu-section" id="sides">
-        <div class="section-heading">
-            <div>
-                <span class="section-kicker">OUR SPECIAL DRINKS</span>
-                <h2>المشروبات المميزة</h2>
-            </div>
-            <span class="section-number">03</span>
-        </div>
-
-        <!-- الحفاظ على تصميم المشروبات المميزة الأصلي -->
-        <div class="small-products-grid" id="specialDrinksGrid"></div>
-    <!-- </section> --> 
-
     <section class="menu-section" id="drinks">
         <div class="section-heading">
             <div>
@@ -126,7 +129,6 @@
             <span class="section-number">04</span>
         </div>
 
-        <!-- الحفاظ على تصميم المشروبات الأصلي -->
         <div class="drinks-grid" id="drinksGrid"></div>
     </section>
 
@@ -185,29 +187,60 @@
                 <input type="text" id="customerName" placeholder="اكتب اسمك">
             </div>
 
-            <div class="form-group">
-                <label for="customerPhone">📱 رقم الهاتف</label>
-                <input type="tel" id="customerPhone" placeholder="مثال: 09XXXXXXXX">
+            <!-- حقل رقم الطاولة (خاص بالوضع المباشر للمطعم) -->
+            <div class="form-group" id="tableNumberGroup" style="display: none;">
+                <label for="customerTable">🪑 رقم الطاولة</label>
+                <input type="text" id="customerTable" placeholder="مثال: الطاولة رقم 5">
             </div>
 
-            <div class="form-group">
-                <label for="customerAddress">📍 العنوان</label>
-                <input type="text" id="customerAddress" placeholder="اكتب عنوان التوصيل">
+            <!-- حقول التوصيل والموقع (خاصة بوضع منصة علي بابا) -->
+            <div id="alibabaDeliveryFields" style="display: none;">
+                <div class="form-group">
+                    <label for="customerPhone">📱 رقم الهاتف</label>
+                    <input type="tel" id="customerPhone" placeholder="مثال: 09XXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="customerAddress">📍 العنوان</label>
+                    <input type="text" id="customerAddress" placeholder="اكتب عنوان التوصيل">
+                </div>
+
+                <div class="form-group">
+                    <button type="button" id="getLocationBtn" class="location-btn" style="width: 100%; padding: 10px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 8px; cursor: pointer;">
+                        📍 تحديد الموقع الجغرافي الحالي
+                    </button>
+                </div>
             </div>
 
+            <!-- ملاحظات الطلب (تظهر في كلا الوضعين) -->
             <div class="form-group">
                 <label for="customerNotes">📝 ملاحظات على الطلب</label>
-                <textarea id="customerNotes" placeholder="مثال: بدون بصل"></textarea>
+                <textarea id="customerNotes" placeholder="مثال: بدون بصل، صوص إضافي..."></textarea>
             </div>
         </div>
 
         <div class="cart-footer">
-            <div class="cart-total">
-                <span>الإجمالي</span>
+            <div class="cart-summary-breakdown" style="width: 100%; margin-bottom: 10px; font-size: 14px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>قيمة المنتجات:</span>
+                    <span id="cartSubtotal">0 ل.س</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; display: none;" id="deliveryFeeRow">
+                    <span>رسوم التوصيل:</span>
+                    <span id="cartDeliveryFee">0 ل.س</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; display: none;" id="alibabaFeeRow">
+                    <span>رسوم خدمة علي بابا:</span>
+                    <span id="cartAlibabaFee">0 ل.س</span>
+                </div>
+            </div>
+
+            <div class="cart-total" style="border-top: 1px solid #eee; padding-top: 8px; width: 100%; display: flex; justify-content: space-between;">
+                <span>الإجمالي النهائي</span>
                 <strong id="cartTotal">0 ل.س</strong>
             </div>
 
-            <button class="whatsapp-order-btn" id="whatsappOrder" type="button">
+            <button class="whatsapp-order-btn" id="whatsappOrder" type="button" style="width: 100%; margin-top: 10px;">
                 <span>📱</span>
                 إتمام الطلب عبر واتساب
             </button>
@@ -224,8 +257,6 @@
             <span>© ALI_BABA 🤍</span>
         </div>
     </div>
-
-   
 
     <p>
         للتواصل مع الإدارة عبر الواتساب:

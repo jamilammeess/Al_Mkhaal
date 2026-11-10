@@ -1,1980 +1,682 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
-       MENU DATA — عدّل المنتجات من هنا فقط
-       isNew: true لإظهار شارة «جديد» على البرغر
-       isFeatured: true لإضافة تنسيق المنتج المميز
+        SETTINGS & WHATSAPP NUMBERS
     ===================================================== */
+    const RESTAURANT_WHATSAPP = "963982147864";
+    const ALIBABA_WHATSAPP = "963982147864";
 
-    const burgersList = [
-          {
-        "id": "shwarma-meal",
-        "name": "وجبة شاورما",
-        "englishName": "MEXICAN MEAL",
-        "price": 400,
-        "image": "images/meals/shwirma.jpg",
-        "description": "وجبة شاورما بتتبيلة مميزة مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "الاكثر طلبا",
-        "alt": "وجبة شاورما"
-    },
-    {
-        "id": "half-broasted",
-        "name": "نصف بروستد",
-        "englishName": "HALF BROASTED",
-        "price": 750,
-        "image": "images/meals/KFC.jpg",
-        "description": " وجبة نصف بروستد مقرمشة مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "الأكثر طلباً",
-        "alt": "نصف بروستد"
-    },
-    {
-        "id": "half-grilled-chicken",
-        "name": "نصف فروج مشوي",
-        "englishName": "HALF GRILLED CHICKEN",
-        "price": 700,
-        "image": "images/meals/bupique_chiken.jpg",
-        "description": "نصف فروج مشوي بتتبيلة مميزة وع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "مشاوي",
-        "alt": "نصف فروج مشوي"
-    },
-    {
-        "id": "half-kilo-shish",
-        "name": "نصف كيلو شقف",
-        "englishName": "HALF KILO SHISH",
-        "price": 1500,
-        "image": "images/meals/slice_meet.jpg",
-        "description": "نصف كيلو من لحم الغنم شقف مشوي",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "مشاوي",
-        "alt": "نصف كيلو شقف"
-    },
-    {
-        "id": "half-kilo-shish",
-        "name": "نصف كيلو كباب خاروف",
-        "englishName": "HALF KILO SHISH",
-        "price": 1500,
-        "image": "images/meals/kabab.jpg",
-        "description": "نصف كيلو من لحم الغنم الكباب المشوي",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "مشاوي",
-        "alt": "نصف كيلو كباب"
-    },
-    {
-        "id": "half-kilo-sfiha",
-        "name": "نصف كيلو صفيحة",
-        "englishName": "HALF KILO SFIHA",
-        "price": 1500,
-        "image": "images/meals/sfeha.jpg",
-        "description": "نصف كيلو صفيحة باللحم",
-        "isNew": false,
-        "isFeatured": false,
-        "badge": "",
-        "alt": "نصف كيلو صفيحة"
-    },
-    {
-        "id": "shish-meal",
-        "name": "وجبة شيش",
-        "englishName": "SHISH MEAL",
-        "price": 400,
-        "image": "images/meals/sheesh.jpg",
-        "description": "قطع شيش متبلة ومشوية مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "مشاوي",
-        "alt": "وجبة شيش"
-    },
-    {
-        "id": "fajita-meal",
-        "name": "وجبة فاهيتا",
-        "englishName": "FAJITA MEAL",
-        "price": 400,
-        "image": "images/meals/fhita.jpg",
-        "description": " قطع دجاج مع الخضار وتتبيلة الفاهيتا مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "",
-        "alt": "وجبة فاهيتا"
-    },
-    {
-        "id": "crispy-meal",
-        "name": "وجبة كريسبي",
-        "englishName": "CRISPY MEAL",
-        "price": 400,
-        "image": "images/meals/crispy.jpg",
-        "description": "قطع دجاج مقرمشة مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "",
-        "alt": "وجبة كريسبي"
-    },
-    {
-        "id": "scallop-meal",
-        "name": "وجبة سكالوب",
-        "englishName": "SCALLOP MEAL",
-        "price": 400,
-        "image": "images/meals/scaloop.jpg",
-        "description": "وجبة سكالوب دجاج مقرمش مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": false,
-        "badge": "",
-        "alt": "وجبة سكالوب"
-    },
-    {
-        "id": "zinger-meal",
-        "name": "وجبة زنجر",
-        "englishName": "ZINGER MEAL",
-        "price": 400,
-        "image": "images/meals/zenjer.jpg",
-        "description": "دجاج زنجر مقرمش بتتبيلة حارة مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": true,
-        "badge": "",
-        "alt": "وجبة زنجر"
-    },
-    {
-        "id": "mexican-meal",
-        "name": "وجبة مكسيكي",
-        "englishName": "MEXICAN MEAL",
-        "price": 400,
-        "image": "images/meals/mexico.jpg",
-        "description": "وجبة دجاج بتتبيلة مكسيكية مميزة مع البطاطا والميونيز",
-        "isNew": false,
-        "isFeatured": false,
-        "badge": "",
-        "alt": "وجبة مكسيكي"
+    function getMenuMode() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('source') === 'alibaba' ? 'alibaba' : 'direct';
     }
-];
 
-    const mealsList = [
-    {
-        "id": "potato-sandwich",
-        "name": "سندويش بطاطا",
-        "englishName": "POTATO SANDWICH",
-        "price": 150,
-        "image": "images/sandwish/botato.jpg",
-        "description": "بطاطا مقرمشة بخبز السمون مع الجبن السائل والصوص الخاص",
-        "alt": "سندويش بطاطا"
-    },
-    {
-        "id": "shawarma-sandwich",
-        "name": "سندويش شاورما",
-        "englishName": "SHAWARMA SANDWICH",
-        "price": 250,
-        "image": "images/sandwish/shawarmaSandwich.jpg",
-        "description": "شرائح شاورما متبلة مع الصوص الخاص داخل الخبز",
-        "alt": "سندويش شاورما"
-    },
-    {
-        "id": "crispy-sandwich",
-        "name": "سندويش كريسبي",
-        "englishName": "CRISPY SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/crispy.jpg",
-        "description": "دجاج كريسبي مقرمش مع الخضار والصوص الخاص",
-        "alt": "سندويش كريسبي"
-    },
-    {
-        "id": "shish-sandwich",
-        "name": "سندويش شيش",
-        "englishName": "SHISH SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/sheesh.jpg",
-        "description": "قطع دجاج شيش متبلة مع الخضار والصوص الخاص",
-        "alt": "سندويش شيش"
-    },
-    {
-        "id": "fajita-sandwich",
-        "name": "سندويش فاهيتا",
-        "englishName": "FAJITA SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/fahita.jpg",
-        "description": "دجاج فاهيتا مع الخضار والصوص المميز",
-        "alt": "سندويش فاهيتا"
-    },
-    {
-        "id": "scallop-sandwich",
-        "name": "سندويش سكالوب",
-        "englishName": "SCALLOP SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/scaloop.jpg",
-        "description": "قطعة سكالوب دجاج مقرمشة مع الخضار والصوص الخاص",
-        "alt": "سندويش سكالوب"
-    },
-    {
-        "id": "zinger-sandwich",
-        "name": "سندويش زنجر",
-        "englishName": "ZINGER SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/zenjer.jpg",
-        "description": "دجاج زنجر مقرمش مع الخضار والصوص الحار الخاص",
-        "alt": "سندويش زنجر"
-    },
-    {
-        "id": "mexican-sandwich",
-        "name": "سندويش مكسيكي",
-        "englishName": "MEXICAN SANDWICH",
-        "price": 350,
-        "image": "images/sandwish/mexico.jpg",
-        "description": "دجاج بتتبيلة مكسيكية مع الخضار والصوص المميز",
-        "alt": "سندويش مكسيكي"
-    }
-]
+    const currentMode = getMenuMode();
 
-    const specialDrinksList = [
-        // {
-        //     "id": "mohito-strawberry",
-        //     "name": "موهيتو بطعم الفريز",
-        //     "englishName": "MOHITO STRAWBERRY",
-        //     "price": 300,
-        //     "image": "images/drinks/mohito.jpg",
-        //     "alt": "موهيتو بطعم الفريز"
-        // },
-        // {
-        //     "id": "passion-juice",
-        //     "name": "عصير بنكهة فاكهة الباشون الطازجة",
-        //     "englishName": "PASSION JUICE",
-        //     "price": 300,
-        //     "image": "images/drinks/bation.jpg",
-        //     "alt": "عصير باشون"
-        // },
-        // {
-        //     "id": "ocean-juice",
-        //     "name": "العصير الأزرق المنعش بنكهة المحيط",
-        //     "englishName": "OCEAN JUICE",
-        //     "price": 300,
-        //     "image": "images/drinks/blueSerron.jpg",
-        //     "alt": "العصير الأزرق"
-        // }
-    ];
-
-    const drinksList = [
+    /* =====================================================
+        OFFERS DATA — قائمة عروض علي بابا
+    ===================================================== */
+    const offersList = [
         {
-            "id": "cola-liter",
-            "name": "كولا ليتر",
-            "price": 110
+            "id": "family-offer",
+            "name": "وجبة العيلة الكبرى",
+            "englishName": "FAMILY MEGA OFFER",
+            "price": 2500,
+            "image": "images/offers/family_offer.jpg",
+            "description": "توليفة مميزة تشمل الوجبات الرئيسية مع المشروبات والبطاطا بأسعار تنافسية",
+            "isNew": true,
+            "isFeatured": true,
+            "badge": "خصم خاص",
+            "alt": "وجبة العيلة الكبرى"
         },
         {
-            "id": "sprite",
-            "name": "سبرايت",
-            "price": 90
-        },
-        {
-            "id": "water",
-            "name": "ماء",
-            "price": 50
-        },
-        {
-            "id": "cola-can",
-            "name": "بيبسي / كولا تنك",
-            "price": 90
+            "id": "alibaba-combo",
+            "name": "عرض علي بابا المزدوج",
+            "englishName": "ALIBABA COMBO",
+            "price": 1200,
+            "image": "images/offers/combo.jpg",
+            "description": "سندويشين مع بطاطا ومشروب غازي بسعر مميز لفترة محدودة",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "عرض حصري",
+            "alt": "عرض علي بابا المزدوج"
         }
     ];
 
+    /* =====================================================
+        MENU DATA — قائمة المنتجات
+    ===================================================== */
+    const burgersList = [
+        {
+            "id": "shwarma-meal",
+            "name": "وجبة شاورما",
+            "englishName": "MEXICAN MEAL",
+            "price": 400,
+            "image": "images/meals/shwirma.jpg",
+            "description": "وجبة شاورما بتتبيلة مميزة مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "الاكثر طلبا",
+            "alt": "وجبة شاورما"
+        },
+        {
+            "id": "half-broasted",
+            "name": "نصف بروستد",
+            "englishName": "HALF BROASTED",
+            "price": 750,
+            "image": "images/meals/KFC.jpg",
+            "description": " وجبة نصف بروستد مقرمشة مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "الأكثر طلباً",
+            "alt": "نصف بروستد"
+        },
+        {
+            "id": "half-grilled-chicken",
+            "name": "نصف فروج مشوي",
+            "englishName": "HALF GRILLED CHICKEN",
+            "price": 700,
+            "image": "images/meals/bupique_chiken.jpg",
+            "description": "نصف فروج مشوي بتتبيلة مميزة وع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "مشاوي",
+            "alt": "نصف فروج مشوي"
+        },
+        {
+            "id": "half-kilo-shish",
+            "name": "نصف كيلو شقف",
+            "englishName": "HALF KILO SHISH",
+            "price": 1500,
+            "image": "images/meals/slice_meet.jpg",
+            "description": "نصف كيلو من لحم الغنم شقف مشوي",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "مشاوي",
+            "alt": "نصف كيلو شقف"
+        },
+        {
+            "id": "half-kilo-kabab",
+            "name": "نصف كيلو كباب خاروف",
+            "englishName": "HALF KILO KABAB",
+            "price": 1500,
+            "image": "images/meals/kabab.jpg",
+            "description": "نصف كيلو من لحم الغنم الكباب المشوي",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "مشاوي",
+            "alt": "نصف كيلو كباب"
+        },
+        {
+            "id": "half-kilo-sfiha",
+            "name": "نصف كيلو صفيحة",
+            "englishName": "HALF KILO SFIHA",
+            "price": 1500,
+            "image": "images/meals/sfeha.jpg",
+            "description": "نصف كيلو صفيحة باللحم",
+            "isNew": false,
+            "isFeatured": false,
+            "badge": "",
+            "alt": "نصف كيلو صفيحة"
+        },
+        {
+            "id": "shish-meal",
+            "name": "وجبة شيش",
+            "englishName": "SHISH MEAL",
+            "price": 400,
+            "image": "images/meals/sheesh.jpg",
+            "description": "قطع شيش متبلة ومشوية مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "مشاوي",
+            "alt": "وجبة شيش"
+        },
+        {
+            "id": "fajita-meal",
+            "name": "وجبة فاهيتا",
+            "englishName": "FAJITA MEAL",
+            "price": 400,
+            "image": "images/meals/fhita.jpg",
+            "description": " قطع دجاج مع الخضار وتتبيلة الفاهيتا مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "",
+            "alt": "وجبة فاهيتا"
+        },
+        {
+            "id": "crispy-meal",
+            "name": "وجبة كريسبي",
+            "englishName": "CRISPY MEAL",
+            "price": 400,
+            "image": "images/meals/crispy.jpg",
+            "description": "قطع دجاج مقرمشة مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "",
+            "alt": "وجبة كريسبي"
+        },
+        {
+            "id": "scallop-meal",
+            "name": "وجبة سكالوب",
+            "englishName": "SCALLOP MEAL",
+            "price": 400,
+            "image": "images/meals/scaloop.jpg",
+            "description": "وجبة سكالوب دجاج مقرمش مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": false,
+            "badge": "",
+            "alt": "وجبة سكالوب"
+        },
+        {
+            "id": "zinger-meal",
+            "name": "وجبة زنجر",
+            "englishName": "ZINGER MEAL",
+            "price": 400,
+            "image": "images/meals/zenjer.jpg",
+            "description": "دجاج زنجر مقرمش بتتبيلة حارة مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": true,
+            "badge": "",
+            "alt": "وجبة زنجر"
+        },
+        {
+            "id": "mexican-meal",
+            "name": "وجبة مكسيكي",
+            "englishName": "MEXICAN MEAL",
+            "price": 400,
+            "image": "images/meals/mexico.jpg",
+            "description": "وجبة دجاج بتتبيلة مكسيكية مميزة مع البطاطا والميونيز",
+            "isNew": false,
+            "isFeatured": false,
+            "badge": "",
+            "alt": "وجبة مكسيكي"
+        }
+    ];
 
-    /* =========================
-       SETTINGS
-    ========================== */
+    const mealsList = [
+        {
+            "id": "potato-sandwich",
+            "name": "سندويش بطاطا",
+            "englishName": "POTATO SANDWICH",
+            "price": 150,
+            "image": "images/sandwish/botato.jpg",
+            "description": "بطاطا مقرمشة بخبز السمون مع الجبن السائل والصوص الخاص",
+            "alt": "سندويش بطاطا"
+        },
+        {
+            "id": "shawarma-sandwich",
+            "name": "سندويش شاورما",
+            "englishName": "SHAWARMA SANDWICH",
+            "price": 250,
+            "image": "images/sandwish/shawarmaSandwich.jpg",
+            "description": "شرائح شاورما متبلة مع الصوص الخاص داخل الخبز",
+            "alt": "سندويش شاورما"
+        },
+        {
+            "id": "crispy-sandwich",
+            "name": "سندويش كريسبي",
+            "englishName": "CRISPY SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/crispy.jpg",
+            "description": "دجاج كريسبي مقرمش مع الخضار والصوص الخاص",
+            "alt": "سندويش كريسبي"
+        },
+        {
+            "id": "shish-sandwich",
+            "name": "سندويش شيش",
+            "englishName": "SHISH SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/sheesh.jpg",
+            "description": "قطع دجاج شيش متبلة مع الخضار والصوص الخاص",
+            "alt": "سندويش شيش"
+        },
+        {
+            "id": "fajita-sandwich",
+            "name": "سندويش فاهيتا",
+            "englishName": "FAJITA SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/fahita.jpg",
+            "description": "دجاج فاهيتا مع الخضار والصوص المميز",
+            "alt": "سندويش فاهيتا"
+        },
+        {
+            "id": "scallop-sandwich",
+            "name": "سندويش سكالوب",
+            "englishName": "SCALLOP SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/scaloop.jpg",
+            "description": "قطعة سكالوب دجاج مقرمشة مع الخضار والصوص الخاص",
+            "alt": "سندويش سكالوب"
+        },
+        {
+            "id": "zinger-sandwich",
+            "name": "سندويش زنجر",
+            "englishName": "ZINGER SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/zenjer.jpg",
+            "description": "دجاج زنجر مقرمش مع الخضار والصوص الحار الخاص",
+            "alt": "سندويش زنجر"
+        },
+        {
+            "id": "mexican-sandwich",
+            "name": "سندويش مكسيكي",
+            "englishName": "MEXICAN SANDWICH",
+            "price": 350,
+            "image": "images/sandwish/mexico.jpg",
+            "description": "دجاج بتتبيلة مكسيكية مع الخضار والصوص المميز",
+            "alt": "سندويش مكسيكي"
+        }
+    ];
 
-    // رقم واتساب المطعم
-    // يجب أن يكون بدون (+) وبدون مسافات
-    const WHATSAPP_NUMBER = "+963940015220";
+    const drinksList = [
+        { "id": "cola-liter", "name": "كولا ليتر", "price": 110 },
+        { "id": "sprite", "name": "سبرايت", "price": 90 },
+        { "id": "water", "name": "ماء", "price": 50 },
+        { "id": "cola-can", "name": "بيبسي / كولا تنك", "price": 90 }
+    ];
 
-    // موقع مطعم مولانا برغر
     const RESTAURANT_LOCATION = {
         latitude: 32.633352420849704,
         longitude: 36.10342464451504
     };
 
-    // أجرة التوصيل لكل كيلومتر أو جزء منه
     const DELIVERY_PRICE_PER_KM = 30;
 
-    let customerLocation = null;
-    let deliveryDistanceKm = null;
-    let deliveryChargedKm = null;
-    let deliveryFee = null;
-    let isCalculatingDelivery = false;
-    let deliveryStatusElement = null;
-    let deliverySummaryElement = null;
-    let deliveryLocationButton = null;
-
-    
-
-    /* =========================
-       GOOGLE ANALYTICS
-    ========================== */
-
-    /*
-     * إرسال Event إلى Google Analytics
-     *
-     * لا يتم إرسال:
-     * - اسم الزبون
-     * - رقم الهاتف
-     * - العنوان
-     * - الملاحظات
-     */
-
-    function trackEvent(eventName, parameters = {}) {
-
-        if (typeof window.gtag !== "function") {
-            return;
-        }
-
-        try {
-
-            window.gtag(
-                "event",
-                eventName,
-                parameters
-            );
-
-        } catch (error) {
-
-            console.warn(
-                "Google Analytics event error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /*
-     * تجهيز منتجات السلة بالشكل المناسب
-     * لـ Google Analytics Ecommerce
-     */
-
-    function getAnalyticsItems() {
-
-        return cart.map(function (item) {
-
-            return {
-
-                item_id:
-                    String(item.id || ""),
-
-                item_name:
-                    String(item.name || "منتج"),
-
-                price:
-                    safeNumber(
-                        item.price,
-                        0
-                    ),
-
-                quantity:
-                    safeNumber(
-                        item.quantity,
-                        1
-                    )
-
-            };
-
-        });
-
-    }
-
-
-    /* =========================
-       CART DATA
-    ========================== */
-
-    // السلة تبدأ فارغة مع كل جلسة جديدة.
+    let deliveryFee = 0;
+    let deliveryDistanceKm = 0;
     let cart = [];
 
+    // حالات تحديد موقع العميل: not_attempted / pending / success / failed
+    let customerLocationAttempted = false;
+    let customerLocationStatus = "not_attempted";
+    let customerCoordinates = null;
 
-    /* =========================
-       ELEMENTS
-    ========================== */
+    let deliveryLocationButton = null;
+    let deliveryStatusElement = null;
+    let deliverySummaryElement = null;
 
-    const floatingCart =
-        document.getElementById("floatingCart");
+    window.customerLocationLink = "غير محدد";
 
-    const cartOverlay =
-        document.getElementById("cartOverlay");
+    applyModeUI();
 
-    const closeCart =
-        document.getElementById("closeCart");
+    function applyModeUI() {
+        const offersSection = document.getElementById("offers");
+        const tableNumberGroup = document.getElementById("tableNumberGroup");
+        const alibabaDeliveryFields = document.getElementById("alibabaDeliveryFields");
+        const deliveryFeeRow = document.getElementById("deliveryFeeRow");
+        const alibabaFeeRow = document.getElementById("alibabaFeeRow");
 
-    const cartItems =
-        document.getElementById("cartItems");
-
-    const cartEmpty =
-        document.getElementById("cartEmpty");
-
-    const cartCount =
-        document.getElementById("cartCount");
-
-    const cartBadge =
-        document.getElementById("cartBadge");
-
-    const cartTotal =
-        document.getElementById("cartTotal");
-
-    const whatsappOrder =
-        document.getElementById("whatsappOrder");
-
-
-    /* =========================
-       SAFE NUMBER
-    ========================== */
-
-    function safeNumber(value, fallback = 0) {
-
-        const number = Number(value);
-
-        return Number.isFinite(number)
-            ? number
-            : fallback;
-
+        if (currentMode === 'alibaba') {
+            if (offersSection) offersSection.style.display = "block";
+            if (tableNumberGroup) tableNumberGroup.style.display = "none";
+            if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "block";
+            if (deliveryFeeRow) deliveryFeeRow.style.display = "flex";
+            if (alibabaFeeRow) alibabaFeeRow.style.display = "flex";
+        } else {
+            if (offersSection) offersSection.style.display = "block";
+            if (tableNumberGroup) tableNumberGroup.style.display = "block";
+            if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "none";
+            if (deliveryFeeRow) deliveryFeeRow.style.display = "none";
+            if (alibabaFeeRow) alibabaFeeRow.style.display = "none";
+        }
     }
 
+    function trackEvent(eventName, parameters = {}) {
+        if (typeof window.gtag !== "function") return;
+        try {
+            window.gtag("event", eventName, parameters);
+        } catch (error) {
+            console.warn("Google Analytics event error:", error);
+        }
+    }
 
-    /* =========================
-       ESCAPE HTML
-    ========================== */
+    const floatingCart = document.getElementById("floatingCart");
+    const cartOverlay = document.getElementById("cartOverlay");
+    const closeCart = document.getElementById("closeCart");
+    const cartItems = document.getElementById("cartItems");
+    const cartEmpty = document.getElementById("cartEmpty");
+    const cartCount = document.getElementById("cartCount");
+    const cartBadge = document.getElementById("cartBadge");
+    const whatsappOrder = document.getElementById("whatsappOrder");
+    let getLocationBtn = document.getElementById("getLocationBtn");
+
+    // عناصر واجهة التوصيل التي ينشئها JavaScript عند الحاجة.
+    const cartTotalElement = document.getElementById("cartTotal");
+
+    function safeNumber(value, fallback = 0) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number : fallback;
+    }
 
     function escapeHTML(value) {
-
         return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-
     }
-
-
-    /* =========================
-       FORMAT PRICE
-    ========================== */
 
     function formatPrice(price) {
-
-        const numericPrice =
-            safeNumber(price);
-
-        return (
-            numericPrice.toLocaleString("ar") +
-            " ل.س"
-        );
-
+        const numericPrice = safeNumber(price);
+        return numericPrice.toLocaleString("ar") + " ل.س";
     }
-
-
-
-    /* =========================
-       RENDER MENU FROM LISTS
-       يتم إنشاء بطاقات المنتجات من القوائم أعلاه
-    ========================== */
-
-    function renderMenuProducts() {
-
+        function renderMenuProducts() {
+        const offersGrid = document.getElementById("offersGrid");
         const burgersGrid = document.getElementById("burgersGrid");
         const mealsGrid = document.getElementById("mealsGrid");
-        const specialDrinksGrid = document.getElementById("specialDrinksGrid");
         const drinksGrid = document.getElementById("drinksGrid");
 
-        if (burgersGrid) {
-            burgersGrid.innerHTML = burgersList.map(function (item) {
-                const name = escapeHTML(item.name);
-                const englishName = escapeHTML(item.englishName || "");
-                const image = escapeHTML(item.image || "");
-                const description = escapeHTML(item.description || "");
-                const badgeText = item.isNew ? "جديد" : (item.badge || "");
-                const badgeHTML = badgeText
-                    ? `<span class="product-badge">${escapeHTML(badgeText)}</span>`
-                    : "";
-
-                return `
-                    <article
-                        class="product-card${item.isFeatured ? " featured" : ""}"
-                        data-id="${escapeHTML(item.id)}"
-                        data-name="${name}"
-                        data-price="${safeNumber(item.price)}"
-                        data-image="${image}">
+        if (offersGrid) {
+            if (currentMode === 'alibaba') {
+                offersGrid.innerHTML = offersList.map(item => `
+                    <article class="product-card offer-special-card" data-id="${escapeHTML(item.id)}" data-name="${escapeHTML(item.name)}" data-price="${safeNumber(item.price)}" data-image="${escapeHTML(item.image)}">
                         <div class="product-image">
-                            ${badgeHTML}
-                            <img src="${image}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
+                            ${item.isNew ? '<span class="product-badge new">جديد</span>' : (item.badge ? `<span class="product-badge">${escapeHTML(item.badge)}</span>` : '')}
+                            <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
                         </div>
                         <div class="product-info">
                             <div class="product-title">
                                 <div>
-                                    <h3>${name}</h3>
-                                    <span>${englishName}</span>
+                                    <h3>${escapeHTML(item.name)}</h3>
+                                    <span>${escapeHTML(item.englishName || "")}</span>
                                 </div>
-                                <strong>${formatPrice(item.price).replace(" ل.س", "")}<small> ل.س</small></strong>
+                                <strong>${safeNumber(item.price).toLocaleString("ar")}<small> ل.س</small></strong>
                             </div>
-                            <p>${description}</p>
-                            <button class="add-to-cart-btn" type="button">
-                                <span>🛒</span>
-                                أضف إلى الطلب
-                            </button>
+                            <p>${escapeHTML(item.description || "")}</p>
+                            <button class="add-to-cart-btn" type="button"><span>🛒</span> أضف العرض</button>
                         </div>
                     </article>
+                `).join("");
+            } else {
+                offersGrid.innerHTML = `
+                    <div style="grid-column: 1 / -1; background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%); color: #856404; border: 2px dashed #ffc107; padding: 30px; border-radius: 16px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin: 10px 0;">
+                        <span style="font-size: 3rem; display: block; margin-bottom: 12px;">🔥🛵</span>
+                        <h3 style="font-size: 1.4rem; color: #795548; margin-bottom: 8px; font-weight: 800;">عروض علي بابا الحصرية</h3>
+                        <p style="font-size: 1.05rem; color: #555; margin-bottom: 20px; line-height: 1.6;">
+                            عروض وتخفيضات العائلة الكبرى متوفرة حصرياً عند الطلب عبر منصة علي بابا للتوصيل الخارجي.
+                        </p>
+                        <a href="https://alibabada.netlify.app" style="display: inline-flex; align-items: center; gap: 8px; background: #ff5722; color: #fff; padding: 12px 24px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 1rem; box-shadow: 0 4px 12px rgba(255,87,34,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <span>🚀</span> الانتقال إلى منصة علي بابا
+                        </a>
+                    </div>
                 `;
-            }).join("");
+            }
+        }
+
+        if (burgersGrid) {
+            burgersGrid.innerHTML = burgersList.map(item => `
+                <article class="product-card${item.isFeatured ? " featured" : ""}" data-id="${escapeHTML(item.id)}" data-name="${escapeHTML(item.name)}" data-price="${safeNumber(item.price)}" data-image="${escapeHTML(item.image)}">
+                    <div class="product-image">
+                        ${item.isNew ? '<span class="product-badge new">جديد</span>' : (item.badge ? `<span class="product-badge">${escapeHTML(item.badge)}</span>` : '')}
+                        <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            <div>
+                                <h3>${escapeHTML(item.name)}</h3>
+                                <span>${escapeHTML(item.englishName || "")}</span>
+                            </div>
+                            <strong>${safeNumber(item.price).toLocaleString("ar")}<small> ل.س</small></strong>
+                        </div>
+                        <p>${escapeHTML(item.description || "")}</p>
+                        <button class="add-to-cart-btn" type="button"><span>🛒</span> أضف إلى الطلب</button>
+                    </div>
+                </article>
+            `).join("");
         }
 
         if (mealsGrid) {
-            mealsGrid.innerHTML = mealsList.map(function (item) {
-                const name = escapeHTML(item.name);
-                const image = escapeHTML(item.image || "");
-                return `
-                    <article
-                        class="product-card"
-                        data-id="${escapeHTML(item.id)}"
-                        data-name="${name}"
-                        data-price="${safeNumber(item.price)}"
-                        data-image="${image}">
-                        <div class="product-image">
-                            <img src="${image}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <div class="product-title">
-                                <div>
-                                    <h3>${name}</h3>
-                                    <span>${escapeHTML(item.englishName || "")}</span>
-                                </div>
-                                <strong>${formatPrice(item.price).replace(" ل.س", "")}<small> ل.س</small></strong>
+            mealsGrid.innerHTML = mealsList.map(item => `
+                <article class="product-card" data-id="${escapeHTML(item.id)}" data-name="${escapeHTML(item.name)}" data-price="${safeNumber(item.price)}" data-image="${escapeHTML(item.image)}">
+                    <div class="product-image">
+                        <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title">
+                            <div>
+                                <h3>${escapeHTML(item.name)}</h3>
+                                <span>${escapeHTML(item.englishName || "")}</span>
                             </div>
-                            <p>${escapeHTML(item.description || "")}</p>
-                            <button class="add-to-cart-btn" type="button">
-                                <span>🛒</span>
-                                أضف إلى الطلب
-                            </button>
+                            <strong>${safeNumber(item.price).toLocaleString("ar")}<small> ل.س</small></strong>
                         </div>
-                    </article>
-                `;
-            }).join("");
-        }
-
-        if (specialDrinksGrid) {
-            specialDrinksGrid.innerHTML = specialDrinksList.map(function (item) {
-                const name = escapeHTML(item.name);
-                const image = escapeHTML(item.image || "");
-                return `
-                    <article
-                        class="small-product"
-                        data-id="${escapeHTML(item.id)}"
-                        data-name="${name}"
-                        data-price="${safeNumber(item.price)}"
-                        data-image="${image}">
-                        <div class="small-product-image">
-                            <img src="${image}" alt="${escapeHTML(item.alt || item.name)}" loading="lazy">
-                        </div>
-                        <div>
-                            <h3>${name}</h3>
-                            <span>${escapeHTML(item.englishName || "")}</span>
-                        </div>
-                        <strong>${formatPrice(item.price).replace(" ل.س", "")}<small> ل.س</small></strong>
-                        <button class="small-add-to-cart-btn" type="button" aria-label="أضف ${name} إلى الطلب">🛒</button>
-                    </article>
-                `;
-            }).join("");
+                        <p>${escapeHTML(item.description || "")}</p>
+                        <button class="add-to-cart-btn" type="button"><span>🛒</span> أضف إلى الطلب</button>
+                    </div>
+                </article>
+            `).join("");
         }
 
         if (drinksGrid) {
-            drinksGrid.innerHTML = drinksList.map(function (item) {
-                return `
-                    <div
-                        class="drink-item"
-                        data-id="${escapeHTML(item.id)}"
-                        data-name="${escapeHTML(item.name)}"
-                        data-price="${safeNumber(item.price)}"
-                        data-image="${escapeHTML(item.image || "")}">
-                        <span>${escapeHTML(item.name)}</span>
-                        <strong>${formatPrice(item.price)}</strong>
-                        <button class="drink-add-btn" type="button" aria-label="أضف ${escapeHTML(item.name)} إلى الطلب">🛒</button>
-                    </div>
-                `;
-            }).join("");
+            drinksGrid.innerHTML = drinksList.map(item => `
+                <div class="drink-item" data-id="${escapeHTML(item.id)}" data-name="${escapeHTML(item.name)}" data-price="${safeNumber(item.price)}" data-image="${escapeHTML(item.image || "")}">
+                    <span>${escapeHTML(item.name)}</span>
+                    <strong>${formatPrice(item.price)}</strong>
+                    <button class="drink-add-btn" type="button" aria-label="أضف ${escapeHTML(item.name)} إلى الطلب">🛒</button>
+                </div>
+            `).join("");
         }
     }
 
-    // عرض المنتجات قبل ربط أحداث أزرار الإضافة إلى السلة
     renderMenuProducts();
 
-    /* =========================
-       GET CART COUNT
-    ========================== */
-
-    function getCartCount() {
-
-        return cart.reduce(
-            function (total, item) {
-
-                const quantity =
-                    safeNumber(
-                        item.quantity,
-                        0
-                    );
-
-                return total + quantity;
-
-            },
-            0
-        );
-
-    }
-
-
-    /* =========================
-       GET CART TOTAL
-    ========================== */
-
-    function getCartTotal() {
-
-        return cart.reduce(
-            function (total, item) {
-
-                const price =
-                    safeNumber(
-                        item.price,
-                        0
-                    );
-
-                const quantity =
-                    safeNumber(
-                        item.quantity,
-                        0
-                    );
-
-                return total +
-                    (price * quantity);
-
-            },
-            0
-        );
-
-    }
-
-
-    /* =========================
-       UPDATE CART COUNTER
-    ========================== */
-
-    function updateCartCounter() {
-
-        const count =
-            getCartCount();
-
-
-        if (cartCount) {
-
-            if (count === 0) {
-
-                cartCount.textContent =
-                    "السلة فارغة";
-
-            } else if (count === 1) {
-
-                cartCount.textContent =
-                    "صنف واحد";
-
-            } else if (
-                count >= 2 &&
-                count <= 10
-            ) {
-
-                cartCount.textContent =
-                    count + " أصناف";
-
-            } else {
-
-                cartCount.textContent =
-                    count + " صنف";
-
-            }
-
-        }
-
-
-        if (cartBadge) {
-
-            cartBadge.textContent =
-                count;
-
-        }
-
-
-        if (floatingCart) {
-
-            floatingCart.classList.toggle(
-                "has-items",
-                count > 0
-            );
-
-        }
-
-        // عرض الإجمالي النهائي مع التوصيل إن تم حسابه
-        if (cartTotal) {
-            cartTotal.textContent = formatPrice(
-                getCartTotal() + (deliveryFee === null ? 0 : deliveryFee)
-            );
-        }
-
-        updateDeliverySummary();
-
-    }
-
-
-    /* =========================
-       ADD TO CART
-    ========================== */
-
-    function addToCart(product) {
-
-        if (!product || !product.id) {
-
-            console.error(
-                "بيانات المنتج غير صالحة:",
-                product
-            );
-
-            return;
-
-        }
-
-
-        const productId =
-            String(product.id);
-
-
-        const productPrice =
-            safeNumber(
-                product.price,
-                0
-            );
-
-
-        const existingProduct =
-            cart.find(
-                function (item) {
-
-                    return String(item.id) ===
-                        productId;
-
-                }
-            );
-
-
-        /*
-         * المنتج موجود مسبقًا
-         */
-
-        if (existingProduct) {
-
-            existingProduct.quantity =
-                safeNumber(
-                    existingProduct.quantity,
-                    0
-                ) + 1;
-
-
-            /*
-             * Analytics:
-             * إضافة كمية جديدة للمنتج
-             */
-
-            trackEvent(
-                "add_to_cart",
-                {
-                    currency: "SYP",
-
-                    value: productPrice,
-
-                    items: [
-                        {
-                            item_id: productId,
-
-                            item_name:
-                                String(
-                                    product.name ||
-                                    "منتج"
-                                ),
-
-                            price: productPrice,
-
-                            quantity: 1
-                        }
-                    ]
-                }
-            );
-
-        }
-
-
-        /*
-         * المنتج جديد
-         */
-
-        else {
-
-            cart.push({
-
-                id: productId,
-
-                name:
-                    String(
-                        product.name || "منتج"
-                    ),
-
-                price:
-                    productPrice,
-
-                image:
-                    product.image
-                        ? String(product.image)
-                        : "",
-
-                quantity: 1
-
-            });
-
-
-            /*
-             * Analytics:
-             * إضافة منتج جديد
-             */
-
-            trackEvent(
-                "add_to_cart",
-                {
-                    currency: "SYP",
-
-                    value: productPrice,
-
-                    items: [
-                        {
-                            item_id: productId,
-
-                            item_name:
-                                String(
-                                    product.name ||
-                                    "منتج"
-                                ),
-
-                            price: productPrice,
-
-                            quantity: 1
-                        }
-                    ]
-                }
-            );
-
-        }
-
-
-        renderCart();
-
-        showAddAnimation();
-
-    }
-
-
-    /* =========================
-       REMOVE PRODUCT
-    ========================== */
-
-    function removeFromCart(productId) {
-
-        const product =
-            cart.find(
-                function (item) {
-
-                    return String(item.id) ===
-                        String(productId);
-
-                }
-            );
-
-
-        /*
-         * تسجيل الحذف قبل حذف المنتج
-         */
-
-        if (product) {
-
-            trackEvent(
-                "remove_from_cart",
-                {
-                    currency: "SYP",
-
-                    value:
-                        safeNumber(
-                            product.price,
-                            0
-                        ) *
-                        safeNumber(
-                            product.quantity,
-                            1
-                        ),
-
-                    items: [
-                        {
-                            item_id:
-                                String(
-                                    product.id
-                                ),
-
-                            item_name:
-                                String(
-                                    product.name ||
-                                    "منتج"
-                                ),
-
-                            price:
-                                safeNumber(
-                                    product.price,
-                                    0
-                                ),
-
-                            quantity:
-                                safeNumber(
-                                    product.quantity,
-                                    1
-                                )
-                        }
-                    ]
-                }
-            );
-
-        }
-
-
-        cart = cart.filter(
-            function (item) {
-
-                return String(item.id) !==
-                    String(productId);
-
-            }
-        );
-
-
-        renderCart();
-
-    }
-
-
-    /* =========================
-       INCREASE QUANTITY
-    ========================== */
-
-    function increaseQuantity(productId) {
-
-        const product =
-            cart.find(
-                function (item) {
-
-                    return String(item.id) ===
-                        String(productId);
-
-                }
-            );
-
-
-        if (!product) {
-
-            return;
-
-        }
-
-
-        product.quantity =
-            safeNumber(
-                product.quantity,
-                0
-            ) + 1;
-
-
-        /*
-         * Analytics
-         */
-
-        trackEvent(
-            "quantity_change",
-            {
-                currency: "SYP",
-
-                change_type: "increase",
-
-                value:
-                    safeNumber(
-                        product.price,
-                        0
-                    ),
-
-                items: [
-                    {
-                        item_id:
-                            String(product.id),
-
-                        item_name:
-                            String(
-                                product.name ||
-                                "منتج"
-                            ),
-
-                        price:
-                            safeNumber(
-                                product.price,
-                                0
-                            ),
-
-                        quantity:
-                            product.quantity
-                    }
-                ]
-            }
-        );
-
-
-        renderCart();
-
-    }
-
-
-    /* =========================
-       DECREASE QUANTITY
-    ========================== */
-
-    function decreaseQuantity(productId) {
-
-        const product =
-            cart.find(
-                function (item) {
-
-                    return String(item.id) ===
-                        String(productId);
-
-                }
-            );
-
-
-        if (!product) {
-
-            return;
-
-        }
-
-
-        const currentQuantity =
-            safeNumber(
-                product.quantity,
-                1
-            );
-
-
-        if (currentQuantity > 1) {
-
-            product.quantity =
-                currentQuantity - 1;
-
-
-            /*
-             * Analytics
-             */
-
-            trackEvent(
-                "quantity_change",
-                {
-                    currency: "SYP",
-
-                    change_type: "decrease",
-
-                    value:
-                        safeNumber(
-                            product.price,
-                            0
-                        ),
-
-                    items: [
-                        {
-                            item_id:
-                                String(product.id),
-
-                            item_name:
-                                String(
-                                    product.name ||
-                                    "منتج"
-                                ),
-
-                            price:
-                                safeNumber(
-                                    product.price,
-                                    0
-                                ),
-
-                            quantity:
-                                product.quantity
-                        }
-                    ]
-                }
-            );
-
-
-            renderCart();
-
-        }
-
-
-        else {
-
-            removeFromCart(productId);
-
-        }
-
-    }
-
-
-    /* =========================
-       RENDER CART
-    ========================== */
-
-    function renderCart() {
-
-        if (!cartItems) {
-
-            return;
-
-        }
-
-
-        cartItems.innerHTML = "";
-
-
-        if (cart.length === 0) {
-
-            if (cartEmpty) {
-
-                cartEmpty.style.display =
-                    "flex";
-
-            }
-
-            cartItems.style.display =
-                "none";
-
-        }
-
-
-        else {
-
-            if (cartEmpty) {
-
-                cartEmpty.style.display =
-                    "none";
-
-            }
-
-
-            cartItems.style.display =
-                "flex";
-
-
-            cart.forEach(
-                function (item) {
-
-                    const cartItem =
-                        document.createElement("div");
-
-
-                    cartItem.className =
-                        "cart-item";
-
-
-                    const itemId =
-                        escapeHTML(
-                            item.id
-                        );
-
-
-                    const itemName =
-                        escapeHTML(
-                            item.name
-                        );
-
-
-                    const itemImage =
-                        escapeHTML(
-                            item.image
-                        );
-
-
-                    const price =
-                        safeNumber(
-                            item.price,
-                            0
-                        );
-
-
-                    const quantity =
-                        Math.max(
-                            1,
-                            safeNumber(
-                                item.quantity,
-                                1
-                            )
-                        );
-
-
-                    const itemTotal =
-                        price * quantity;
-
-
-                    const imageHTML =
-                        itemImage
-                            ? `
-                                <img
-                                    src="${itemImage}"
-                                    alt="${itemName}"
-                                    loading="lazy"
-                                    onerror="
-                                        this.style.display='none';
-                                        this.nextElementSibling.style.display='inline-flex';
-                                    "
-                                >
-
-                                <span
-                                    style="display:none;"
-                                    aria-hidden="true"
-                                >
-                                    🍔
-                                </span>
-                              `
-                            : `
-                                <span
-                                    aria-hidden="true"
-                                >
-                                    🍔
-                                </span>
-                              `;
-
-
-                    cartItem.innerHTML = `
-                        <div class="cart-item-image">
-
-                            ${imageHTML}
-
-                        </div>
-
-
-                        <div class="cart-item-info">
-
-                            <h4>
-                                ${itemName}
-                            </h4>
-
-
-                            <span class="cart-item-price">
-                                ${formatPrice(price)}
-                            </span>
-
-
-                            <div
-                                class="quantity-controls"
-                                aria-label="تعديل كمية ${itemName}"
-                            >
-
-                                <button
-                                    type="button"
-                                    class="quantity-btn increase-btn"
-                                    data-id="${itemId}"
-                                    aria-label="زيادة كمية ${itemName}"
-                                    title="زيادة الكمية"
-                                >
-                                    +
-                                </button>
-
-
-                                <span
-                                    class="quantity-number"
-                                    aria-live="polite"
-                                >
-                                    ${quantity}
-                                </span>
-
-
-                                <button
-                                    type="button"
-                                    class="quantity-btn decrease-btn"
-                                    data-id="${itemId}"
-                                    aria-label="إنقاص كمية ${itemName}"
-                                    title="إنقاص الكمية"
-                                >
-                                    −
-                                </button>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="cart-item-actions">
-
-                            <strong
-                                class="cart-item-total"
-                                title="إجمالي المنتج"
-                            >
-                                ${formatPrice(itemTotal)}
-                            </strong>
-
-
-                            <button
-                                type="button"
-                                class="remove-item"
-                                data-id="${itemId}"
-                                aria-label="حذف ${itemName} من السلة"
-                                title="حذف المنتج"
-                            >
-                                🗑️
-                            </button>
-
-                        </div>
-                    `;
-
-
-                    cartItems.appendChild(
-                        cartItem
-                    );
-
-                }
-            );
-
-        }
-
-
-        if (cartTotal) {
-
-            cartTotal.textContent =
-                formatPrice(
-                    getCartTotal()
-                );
-
-        }
-
-
-        updateCartCounter();
-
-    }
-
-
-    /* =========================
-       CART ITEM EVENTS
-       EVENT DELEGATION
-    ========================== */
-
-    if (cartItems) {
-
-        cartItems.addEventListener(
-            "click",
-            function (event) {
-
-                const button =
-                    event.target.closest(
-                        "button"
-                    );
-
-
-                if (!button) {
-
-                    return;
-
-                }
-
-
-                const productId =
-                    button.dataset.id;
-
-
-                if (!productId) {
-
-                    return;
-
-                }
-
-
-                if (
-                    button.classList.contains(
-                        "increase-btn"
-                    )
-                ) {
-
-                    increaseQuantity(
-                        productId
-                    );
-
-                }
-
-
-                else if (
-                    button.classList.contains(
-                        "decrease-btn"
-                    )
-                ) {
-
-                    decreaseQuantity(
-                        productId
-                    );
-
-                }
-
-
-                else if (
-                    button.classList.contains(
-                        "remove-item"
-                    )
-                ) {
-
-                    removeFromCart(
-                        productId
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =========================
-       ADD PRODUCT EVENTS
-    ========================== */
-
-    const addButtons =
-        document.querySelectorAll(
-            ".add-to-cart-btn, .small-add-to-cart-btn, .drink-add-btn"
-        );
-
-
-    addButtons.forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    const productElement =
-                        button.closest(
-                            ".product-card, .small-product, .drink-item"
-                        );
-
-
-                    if (!productElement) {
-
-                        console.error(
-                            "لم يتم العثور على عنصر المنتج."
-                        );
-
-                        return;
-
-                    }
-
-
-                    const product = {
-
-                        id:
-                            productElement.dataset.id,
-
-                        name:
-                            productElement.dataset.name,
-
-                        price:
-                            productElement.dataset.price,
-
-                        image:
-                            productElement.dataset.image || ""
-
-                    };
-
-
-                    if (
-                        !product.id ||
-                        !product.name ||
-                        product.price === undefined ||
-                        product.price === ""
-                    ) {
-
-                        console.error(
-                            "بيانات المنتج ناقصة:",
-                            product
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        !Number.isFinite(
-                            Number(product.price)
-                        )
-                    ) {
-
-                        console.error(
-                            "سعر المنتج غير صالح:",
-                            product
-                        );
-
-                        return;
-
-                    }
-
-
-                    addToCart(
-                        product
-                    );
-
-
-                    animateButton(
-                        button
-                    );
-
-                }
-            );
-
-        }
-    );
-
-
-  
-/* =========================
-   CATEGORY ANALYTICS + ACTIVE STATE
-========================= */
-
-const categoryLinks = document.querySelectorAll(
-    ".categories .category"
-);
-
-categoryLinks.forEach(function (categoryLink) {
-
-    categoryLink.addEventListener("click", function () {
-
-        // 1. إزالة التحديد السابق عن جميع التصنيفات
-        categoryLinks.forEach(function (link) {
-            link.classList.remove("active");
+    const categoryLinks = document.querySelectorAll(".categories .category");
+    categoryLinks.forEach(link => {
+        link.addEventListener("click", function() {
+            categoryLinks.forEach(el => el.classList.remove("active"));
+            this.classList.add("active");
         });
-
-        // 2. إبقاء التصنيف الذي ضغط عليه المستخدم محدداً
-        this.classList.add("active");
-
-        // 3. الاحتفاظ بتتبع Google Analytics كما كان
-        const categoryName = this.querySelector("span:last-child");
-
-        const categoryText = categoryName
-            ? categoryName.textContent.trim()
-            : this.textContent.trim();
-
-        const categoryId = (
-            this.getAttribute("href") || ""
-        ).replace("#", "");
-
-        trackEvent("category_click", {
-            category_name: categoryText,
-            category_id: categoryId
-        });
-
     });
 
-});
-
-
-    /* =========================
-       ADD BUTTON ANIMATION
-    ========================== */
-
-    function animateButton(button) {
-
-        if (!button) {
-
-            return;
-
-        }
-
-
-        const originalText =
-            button.innerHTML;
-
-
-        button.disabled = true;
-
-
-        button.classList.add(
-            "added"
-        );
-
-
-        button.innerHTML =
-            "✓ تمت الإضافة";
-
-
-        setTimeout(
-            function () {
-
-                button.innerHTML =
-                    originalText;
-
-
-                button.classList.remove(
-                    "added"
-                );
-
-
-                button.disabled =
-                    false;
-
-            },
-            1200
-        );
-
+    function getCartCount() {
+        return cart.reduce((total, item) => total + safeNumber(item.quantity, 0), 0);
     }
 
-
-    /* =========================
-       CART ADD ANIMATION
-    ========================== */
-
-    function showAddAnimation() {
-
-        if (!floatingCart) {
-
-            return;
-
-        }
-
-
-        floatingCart.classList.remove(
-            "cart-bounce"
-        );
-
-
-        void floatingCart.offsetWidth;
-
-
-        floatingCart.classList.add(
-            "cart-bounce"
-        );
-
-
-        setTimeout(
-            function () {
-
-                floatingCart.classList.remove(
-                    "cart-bounce"
-                );
-
-            },
-            500
-        );
-
+    function calculateSubtotal() {
+        return cart.reduce((total, item) => total + (safeNumber(item.price, 0) * safeNumber(item.quantity, 0)), 0);
     }
 
+    function calculateTotalPieces() {
+        return cart.reduce((sum, item) => sum + safeNumber(item.quantity, 0), 0);
+    }
 
-    /* =========================
-       OPEN CART
-    ========================== */
+    function calculateAlibabaServiceFee(subtotal, totalPieces) {
+        if (currentMode !== 'alibaba') return 0;
+        if (subtotal > 1000) {
+            return Math.round(subtotal * 0.03);
+        } else {
+            return totalPieces * 10;
+        }
+    }
+    /* =====================================================
+   ALIBABA — ORDER REVIEW SECTION
+   مراجعة الطلب داخل السلة
+===================================================== */
 
-    if (floatingCart) {
+    function updateCartCounter() {
+        const count = getCartCount();
+        const subtotal = calculateSubtotal();
+        const totalPieces = calculateTotalPieces();
+        const alibabaFee = calculateAlibabaServiceFee(subtotal, totalPieces);
 
-        floatingCart.addEventListener(
-            "click",
-            function () {
+        if (cartCount) {
+            cartCount.textContent = count === 0 ? "السلة فارغة" : (count === 1 ? "صنف واحد" : count + " أصناف");
+        }
+        if (cartBadge) {
+            cartBadge.textContent = count;
+        }
+        if (floatingCart) {
+            floatingCart.classList.toggle("has-items", count > 0);
+        }
 
-                if (!cartOverlay) {
+        const subtotalEl = document.getElementById("cartSubtotal");
+        const deliveryFeeEl = document.getElementById("cartDeliveryFee");
+        const alibabaFeeEl = document.getElementById("cartAlibabaFee");
+        const totalEl = document.getElementById("cartTotal");
 
-                    return;
+        if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+        if (deliveryFeeEl) deliveryFeeEl.textContent = formatPrice(deliveryFee);
+        if (alibabaFeeEl) alibabaFeeEl.textContent = formatPrice(alibabaFee);
 
-                }
+        let finalTotal = subtotal;
+        if (currentMode === 'alibaba') {
+            finalTotal += deliveryFee + alibabaFee;
+        }
+        if (totalEl) {
+            totalEl.textContent = formatPrice(finalTotal);
+        }
+    
+    }
 
+    function addToCart(product, buttonElement) {
+        if (!product || !product.id) return;
+        const productId = String(product.id);
+        const productPrice = safeNumber(product.price, 0);
 
-                renderCart();
+        const existingProduct = cart.find(item => String(item.id) === productId);
 
+        if (existingProduct) {
+            existingProduct.quantity = safeNumber(existingProduct.quantity, 0) + 1;
+        } else {
+            cart.push({
+                id: productId,
+                name: String(product.name || "منتج"),
+                price: productPrice,
+                image: product.image ? String(product.image) : "",
+                quantity: 1
+            });
+        }
 
-                /*
-                 * Analytics:
-                 * فتح السلة
-                 */
-
-                trackEvent(
-                    "view_cart",
-                    {
-                        currency: "SYP",
-
-                        value:
-                            getCartTotal(),
-
-                        items:
-                            getAnalyticsItems()
-                    }
-                );
-
-
-                cartOverlay.classList.add(
-                    "show"
-                );
-
-
-                document.body.style.overflow =
-                    "hidden";
-
+        if (buttonElement) {
+            buttonElement.classList.add("added");
+            const originalText = buttonElement.innerHTML;
+            if (!buttonElement.querySelector("span.check")) {
+                buttonElement.innerHTML = "<span>✓ تم الإضافة</span>";
             }
-        );
-
-    }
-
-
-    /* =========================
-       CLOSE CART
-    ========================== */
-
-    if (closeCart) {
-
-        closeCart.addEventListener(
-            "click",
-            closeCartPanel
-        );
-
-    }
-
-
-    if (cartOverlay) {
-
-        cartOverlay.addEventListener(
-            "click",
-            function (event) {
-
-                if (
-                    event.target ===
-                    cartOverlay
-                ) {
-
-                    closeCartPanel();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    function closeCartPanel() {
-
-        if (cartOverlay) {
-
-            cartOverlay.classList.remove(
-                "show"
-            );
-
+            setTimeout(() => {
+                buttonElement.classList.remove("added");
+                buttonElement.innerHTML = originalText;
+            }, 1000);
         }
 
-
-        document.body.style.overflow =
-            "";
-
+        renderCart();
     }
 
+    window.removeFromCart = function(productId) {
+        cart = cart.filter(item => String(item.id) !== String(productId));
+        renderCart();
+    };
 
-    /* =========================
-       ESC KEY - CLOSE CART
-    ========================== */
-
-    document.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (
-                event.key === "Escape" &&
-                cartOverlay &&
-                cartOverlay.classList.contains(
-                    "show"
-                )
-            ) {
-
-                closeCartPanel();
-
-            }
-
+    window.increaseQuantity = function(productId) {
+        const product = cart.find(item => String(item.id) === String(productId));
+        if (product) {
+            product.quantity = safeNumber(product.quantity, 0) + 1;
+            renderCart();
         }
-    );
+    };
 
+    window.decreaseQuantity = function(productId) {
+        const product = cart.find(item => String(item.id) === String(productId));
+        if (!product) return;
+        const currentQuantity = safeNumber(product.quantity, 1);
+        if (currentQuantity > 1) {
+            product.quantity = currentQuantity - 1;
+            renderCart();
+        } else {
+            removeFromCart(productId);
+        }
+    };
+function renderCart() {
+    if (!cartItems) return;
 
-    /* =========================
-       GET CUSTOMER DATA
-    ========================== */
+    cartItems.innerHTML = "";
 
-    function getCustomerData() {
+    if (cart.length === 0) {
+        if (cartEmpty) cartEmpty.style.display = "flex";
+        cartItems.style.display = "none";
+    } else {
+        if (cartEmpty) cartEmpty.style.display = "none";
+        cartItems.style.display = "flex";
 
-        const customerNameElement =
-            document.getElementById(
-                "customerName"
-            );
+        cart.forEach(item => {
+            const cartItem = document.createElement("div");
 
+            cartItem.className = "cart-item";
 
-        const customerPhoneElement =
-            document.getElementById(
-                "customerPhone"
-            );
+            cartItem.innerHTML = `
+                <div class="cart-item-image">
+                    ${item.image
+                        ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}">`
+                        : '<span>🍔</span>'}
+                </div>
 
+                <div class="cart-item-info">
+                    <h4>${escapeHTML(item.name)}</h4>
 
-        const customerAddressElement =
-            document.getElementById(
-                "customerAddress"
-            );
+                    <span class="cart-item-price">
+                        ${formatPrice(item.price)}
+                    </span>
 
+                    <div class="quantity-controls">
+                        <button
+                            type="button"
+                            class="quantity-btn"
+                            onclick="decreaseQuantity('${item.id}')"
+                        >-</button>
 
-        const customerNotesElement =
-            document.getElementById(
-                "customerNotes"
-            );
+                        <span class="quantity-number">
+                            ${item.quantity}
+                        </span>
 
+                        <button
+                            type="button"
+                            class="quantity-btn"
+                            onclick="increaseQuantity('${item.id}')"
+                        >+</button>
+                    </div>
+                </div>
 
-        return {
+                <div class="cart-item-actions">
+                    <button
+                        type="button"
+                        class="remove-item"
+                        onclick="removeFromCart('${item.id}')"
+                        aria-label="حذف المنتج"
+                    >🗑️</button>
 
-            name:
-                customerNameElement
-                    ? customerNameElement.value.trim()
-                    : "",
+                    <strong>
+                        ${formatPrice(item.price * item.quantity)}
+                    </strong>
+                </div>
+            `;
 
-            phone:
-                customerPhoneElement
-                    ? customerPhoneElement.value.trim()
-                    : "",
-
-            address:
-                customerAddressElement
-                    ? customerAddressElement.value.trim()
-                    : "",
-
-            notes:
-                customerNotesElement
-                    ? customerNotesElement.value.trim()
-                    : "",
-
-            nameElement:
-                customerNameElement,
-
-            phoneElement:
-                customerPhoneElement,
-
-            addressElement:
-                customerAddressElement,
-
-            notesElement:
-                customerNotesElement
-
-        };
-
+            cartItems.appendChild(cartItem);
+        });
     }
 
-
-    /* =========================
-       VALIDATE CUSTOMER DATA
-    ========================== */
-
-    function validateCustomerData(customer) {
-
-        if (!customer.name) {
-
-            alert(
-                "يرجى إدخال الاسم"
-            );
-
-
-            if (customer.nameElement) {
-
-                customer.nameElement.focus();
-
-            }
-
-
-            return false;
-
-        }
-
-
-        if (!customer.phone) {
-
-            alert(
-                "يرجى إدخال رقم الهاتف"
-            );
-
-
-            if (customer.phoneElement) {
-
-                customer.phoneElement.focus();
-
-            }
-
-
-            return false;
-
-        }
-
-
-        if (!customer.address) {
-
-            alert(
-                "يرجى إدخال عنوان التوصيل"
-            );
-
-
-            if (customer.addressElement) {
-
-                customer.addressElement.focus();
-
-            }
-
-
-            return false;
-
-        }
-
-
-        return true;
-
-    }
-
-
-    /* =========================
-       DELIVERY LOCATION & FEE
-       تحديد موقع العميل وحساب مسافة الطريق
-    ========================== */
+    updateCartCounter();
+}
+        /* =====================================================
+       DELIVERY LOCATION & ROAD ROUTING
+       لا يوجد أي رجوع لحساب الخط المستقيم.
+       أجرة التوصيل لا تحسب إلا من مسار قيادة فعلي.
+    ===================================================== */
 
     function injectDeliveryUI() {
+        if (currentMode !== "alibaba") return;
 
-        const customerAddress =
-            document.getElementById("customerAddress");
+        const customerAddress = document.getElementById("customerAddress");
 
-        if (
-            customerAddress &&
-            !document.getElementById("detectCustomerLocation")
-        ) {
+        // استخدم زر HTML الموجود إن وجد، وإلا أنشئ الزر بعد حقل العنوان.
+        getLocationBtn =
+            document.getElementById("getLocationBtn") ||
+            document.getElementById("detectCustomerLocation");
 
-            deliveryLocationButton =
-                document.createElement("button");
-
-            deliveryLocationButton.id =
-                "detectCustomerLocation";
-
-            deliveryLocationButton.type =
-                "button";
-
-            deliveryLocationButton.textContent =
-                "📍 تحديد موقعي وحساب التوصيل";
-
+        if (!getLocationBtn && customerAddress) {
+            deliveryLocationButton = document.createElement("button");
+            deliveryLocationButton.id = "detectCustomerLocation";
+            deliveryLocationButton.type = "button";
+            deliveryLocationButton.textContent = "📍 تحديد موقعي وحساب التوصيل";
             deliveryLocationButton.style.cssText = [
                 "display:block",
                 "width:100%",
@@ -1989,23 +691,28 @@ categoryLinks.forEach(function (categoryLink) {
                 "cursor:pointer"
             ].join(";");
 
+            customerAddress.insertAdjacentElement("afterend", deliveryLocationButton);
+            getLocationBtn = deliveryLocationButton;
+        }
 
-            deliveryStatusElement =
-                document.createElement("p");
+        // وحّد لون الزر الموجود مسبقاً مع اللون العنابي لبقية أزرار المنيو.
+        if (getLocationBtn) {
+            getLocationBtn.style.backgroundColor = "#7C0434";
+            getLocationBtn.style.color = "#fff";
+            getLocationBtn.style.border = "0";
+            getLocationBtn.style.borderRadius = "10px";
+            getLocationBtn.style.fontWeight = "700";
+            getLocationBtn.style.cursor = "pointer";
+            getLocationBtn.style.width = "100%";
+            getLocationBtn.style.padding = "12px 14px";
+        }
 
-            deliveryStatusElement.id =
-                "deliveryLocationStatus";
-
-            deliveryStatusElement.setAttribute(
-                "role",
-                "status"
-            );
-
-            deliveryStatusElement.setAttribute(
-                "aria-live",
-                "polite"
-            );
-
+        deliveryStatusElement = document.getElementById("deliveryLocationStatus");
+        if (!deliveryStatusElement && getLocationBtn) {
+            deliveryStatusElement = document.createElement("p");
+            deliveryStatusElement.id = "deliveryLocationStatus";
+            deliveryStatusElement.setAttribute("role", "status");
+            deliveryStatusElement.setAttribute("aria-live", "polite");
             deliveryStatusElement.style.cssText = [
                 "margin:8px 0 0",
                 "font:inherit",
@@ -2013,34 +720,13 @@ categoryLinks.forEach(function (categoryLink) {
                 "line-height:1.7",
                 "color:#555"
             ].join(";");
-
-
-            customerAddress.insertAdjacentElement(
-                "afterend",
-                deliveryLocationButton
-            );
-
-            deliveryLocationButton.insertAdjacentElement(
-                "afterend",
-                deliveryStatusElement
-            );
-
-            deliveryLocationButton.addEventListener(
-                "click",
-                detectCustomerLocation
-            );
-
+            getLocationBtn.insertAdjacentElement("afterend", deliveryStatusElement);
         }
 
-
-        if (!document.getElementById("deliverySummary")) {
-
-            deliverySummaryElement =
-                document.createElement("div");
-
-            deliverySummaryElement.id =
-                "deliverySummary";
-
+        deliverySummaryElement = document.getElementById("deliverySummary");
+        if (!deliverySummaryElement) {
+            deliverySummaryElement = document.createElement("div");
+            deliverySummaryElement.id = "deliverySummary";
             deliverySummaryElement.style.cssText = [
                 "margin-top:10px",
                 "padding:12px",
@@ -2052,982 +738,353 @@ categoryLinks.forEach(function (categoryLink) {
                 "line-height:1.9"
             ].join(";");
 
-
-            if (cartTotal && cartTotal.parentElement) {
-
-                cartTotal.parentElement.insertAdjacentElement(
-                    "afterend",
-                    deliverySummaryElement
-                );
-
-            } else if (
-                whatsappOrder &&
-                whatsappOrder.parentElement
-            ) {
-
-                whatsappOrder.parentElement.insertBefore(
-                    deliverySummaryElement,
-                    whatsappOrder
-                );
-
+            if (cartTotalElement && cartTotalElement.parentElement) {
+                cartTotalElement.parentElement.insertAdjacentElement("afterend", deliverySummaryElement);
+            } else if (whatsappOrder && whatsappOrder.parentElement) {
+                whatsappOrder.parentElement.insertBefore(deliverySummaryElement, whatsappOrder);
+            } else if (customerAddress) {
+                customerAddress.insertAdjacentElement("afterend", deliverySummaryElement);
             }
+        }
 
-        } else {
-
-            deliverySummaryElement =
-                document.getElementById("deliverySummary");
-
+        if (getLocationBtn && !getLocationBtn.dataset.locationHandlerAttached) {
+            getLocationBtn.addEventListener("click", detectCustomerLocation);
+            getLocationBtn.dataset.locationHandlerAttached = "true";
         }
 
         updateDeliverySummary();
-
     }
 
-
     function setDeliveryStatus(message, isError = false) {
-
         if (!deliveryStatusElement) {
-
-            deliveryStatusElement =
-                document.getElementById(
-                    "deliveryLocationStatus"
-                );
-
+            deliveryStatusElement = document.getElementById("deliveryLocationStatus");
         }
 
         if (deliveryStatusElement) {
-
-            deliveryStatusElement.textContent =
-                message;
-
-            deliveryStatusElement.style.color =
-                isError ? "#b42318" : "#555";
-
+            deliveryStatusElement.textContent = message;
+            deliveryStatusElement.style.color = isError ? "#b42318" : "#555";
         }
-
     }
-
 
     function updateDeliverySummary() {
-
         if (!deliverySummaryElement) {
-
-            deliverySummaryElement =
-                document.getElementById("deliverySummary");
-
+            deliverySummaryElement = document.getElementById("deliverySummary");
         }
+        if (!deliverySummaryElement || currentMode !== "alibaba") return;
 
-        if (!deliverySummaryElement) {
+        const distanceText = deliveryDistanceKm > 0
+            ? `${deliveryDistanceKm.toFixed(1)} كم عبر الطريق`
+            : "لم يتم حساب مسار الطريق بعد";
 
-            return;
+        const feeText = deliveryDistanceKm > 0
+            ? formatPrice(deliveryFee)
+            : formatPrice(0);
 
-        }
-
-        const productsTotal =
-            getCartTotal();
-
-
-        if (deliveryFee === null) {
-
-            deliverySummaryElement.innerHTML =
-                `<div>🛒 قيمة المنتجات: <strong>${formatPrice(productsTotal)}</strong></div>` +
-                `<div>🚚 أجرة التوصيل: <strong>تُحسب بعد تحديد الموقع</strong></div>` +
-                `<div style="border-top:1px solid #ead8ce;margin-top:6px;padding-top:6px">` +
-                `💰 الإجمالي بعد التوصيل: <strong>${formatPrice(productsTotal)} + أجرة التوصيل</strong></div>`;
-
-            return;
-
-        }
-
-
-        deliverySummaryElement.innerHTML =
-            `<div>🛒 قيمة المنتجات: <strong>${formatPrice(productsTotal)}</strong></div>` +
-            `<div>📏 مسافة الطريق: <strong>${deliveryDistanceKm.toFixed(2)} كم</strong></div>` +
-            `<div>🧮 المسافة المعتمدة للحساب: <strong>${deliveryChargedKm} كم</strong></div>` +
-            `<div>🚚 أجرة التوصيل: <strong>${formatPrice(deliveryFee)}</strong></div>` +
-            `<div style="border-top:1px solid #ead8ce;margin-top:6px;padding-top:6px">` +
-            `💰 الإجمالي النهائي: <strong>${formatPrice(productsTotal + deliveryFee)}</strong></div>`;
-
+        deliverySummaryElement.innerHTML = `
+            <div><strong>📍 مسافة التوصيل:</strong> ${escapeHTML(distanceText)}</div>
+            <div><strong>🚚 أجرة التوصيل:</strong> ${escapeHTML(feeText)}</div>
+            <div style="font-size:12px;color:#666;margin-top:4px">
+                يتم احتساب الأجرة على أساس مسار القيادة الفعلي، مع تقريب الكيلومترات إلى الأعلى.
+            </div>
+        `;
     }
 
+    // طلب الموقع من المتصفح: يبدأ بدقة عالية ثم يعيد المحاولة بإعدادات أكثر مرونة.
+    function requestBrowserLocation(onSuccess, onError) {
+        if (!navigator.geolocation) {
+            onError(new Error("المتصفح لا يدعم تحديد الموقع الجغرافي."));
+            return;
+        }
 
-/* ==========================================
-   MOBILE-FRIENDLY GEOLOCATION
-   تحديد الموقع على iPhone وAndroid
-========================================== */
-
-let isDetectingLocation = false;
-
-function getCurrentPositionAsync(options) {
-    return new Promise(function (resolve, reject) {
         navigator.geolocation.getCurrentPosition(
-            resolve,
-            reject,
-            options
-        );
-    });
-}
-
-function getLocationErrorMessage(error) {
-    if (!error) {
-        return "تعذر تحديد موقعك. حاول مرة أخرى.";
-    }
-
-    switch (error.code) {
-        case 1:
-            return "تم رفض إذن الموقع. افتح إعدادات المتصفح واسمح بالوصول إلى موقعك، ثم أعد المحاولة.";
-
-        case 2:
-            return "الهاتف لم يتمكن من تحديد موقعك. فعّل خدمات الموقع GPS، وتحقق من اتصال الإنترنت.";
-
-        case 3:
-            return "استغرق تحديد الموقع وقتًا طويلًا. انتقل إلى مكان مفتوح وحاول مرة أخرى.";
-
-        default:
-            return "حدث خطأ أثناء تحديد الموقع. تحقق من إعدادات الهاتف وحاول مجددًا.";
-    }
-}
-
-async function detectCustomerLocation() {
-    if (isDetectingLocation || isCalculatingDelivery) {
-        return;
-    }
-
-    if (!navigator.geolocation) {
-        setDeliveryStatus(
-            "متصفحك لا يدعم تحديد الموقع. جرّب فتح المنيو في Safari أو Chrome.",
-            true
-        );
-        return;
-    }
-
-    // تحديد الموقع يحتاج إلى اتصال آمن HTTPS،
-    // باستثناء localhost أثناء التطوير.
-    if (
-        !window.isSecureContext &&
-        location.hostname !== "localhost" &&
-        location.hostname !== "127.0.0.1"
-    ) {
-        setDeliveryStatus(
-            "الموقع مفتوح باتصال غير آمن. افتح رابط المنيو الذي يبدأ بـ https:// ثم حاول مجددًا.",
-            true
-        );
-        return;
-    }
-
-    isDetectingLocation = true;
-
-    if (deliveryLocationButton) {
-        deliveryLocationButton.disabled = true;
-        deliveryLocationButton.textContent = "⏳ جارٍ تحديد الموقع...";
-    }
-
-    setDeliveryStatus(
-        "جارٍ تحديد موقعك. يرجى السماح بالوصول إلى الموقع وإبقاء الصفحة مفتوحة."
-    );
-
-    // إلغاء نتيجة سابقة حتى لا يُستخدم سعر توصيل قديم.
-    customerLocation = null;
-    deliveryDistanceKm = null;
-    deliveryChargedKm = null;
-    deliveryFee = null;
-
-    updateDeliverySummary();
-    updateCartCounter();
-
-    try {
-        let position;
-
-        try {
-            // المحاولة الأولى: دقة مرتفعة.
-            position = await getCurrentPositionAsync({
-                enableHighAccuracy: true,
-                timeout: 30000,
-                maximumAge: 0
-            });
-        } catch (firstError) {
-            // لا نعيد المحاولة إذا رفض المستخدم الإذن.
-            if (firstError && firstError.code === 1) {
-                throw firstError;
-            }
-
-            setDeliveryStatus(
-                "لم يُحدَّد الموقع بدقة بعد. جارٍ تجربة طريقة أخرى..."
-            );
-
-            // المحاولة الثانية: قد تكون أنسب لبعض الهواتف.
-            position = await getCurrentPositionAsync({
-                enableHighAccuracy: false,
-                timeout: 25000,
-                maximumAge: 60000
-            });
-        }
-
-        const latitude = Number(position.coords.latitude);
-        const longitude = Number(position.coords.longitude);
-
-        if (
-            !Number.isFinite(latitude) ||
-            !Number.isFinite(longitude) ||
-            latitude < -90 ||
-            latitude > 90 ||
-            longitude < -180 ||
-            longitude > 180
-        ) {
-            throw new Error("الإحداثيات التي أعادها الهاتف غير صالحة.");
-        }
-
-        customerLocation = {
-            latitude: latitude,
-            longitude: longitude,
-            mapUrl:
-                "https://www.google.com/maps?q=" +
-                encodeURIComponent(latitude + "," + longitude)
-        };
-
-        setDeliveryStatus(
-            "تم تحديد موقعك بنجاح. جارٍ حساب مسافة الطريق وأجرة التوصيل..."
-        );
-
-        const routeCalculated = await calculateDeliveryRoute();
-
-        if (!routeCalculated) {
-            // لا نحتفظ بموقع غير مكتمل الحساب باعتباره طلبًا جاهزًا.
-            customerLocation = null;
-            deliveryDistanceKm = null;
-            deliveryChargedKm = null;
-            deliveryFee = null;
-
-            updateDeliverySummary();
-            updateCartCounter();
-        }
-    } catch (error) {
-        console.error("Customer location error:", error);
-
-        customerLocation = null;
-        deliveryDistanceKm = null;
-        deliveryChargedKm = null;
-        deliveryFee = null;
-
-        setDeliveryStatus(
-            error && error.code
-                ? getLocationErrorMessage(error)
-                : "تم تحديد الموقع أو بدء العملية، لكن تعذر إكمالها. تحقق من الإنترنت وحاول مجددًا.",
-            true
-        );
-
-        updateDeliverySummary();
-        updateCartCounter();
-    } finally {
-        isDetectingLocation = false;
-
-        if (deliveryLocationButton) {
-            deliveryLocationButton.disabled = false;
-            deliveryLocationButton.textContent =
-                "📍 إعادة تحديد موقعي وحساب التوصيل";
-        }
-    }
-}
-
-
-
-    async function calculateDeliveryRoute() {
-
-        if (!customerLocation) {
-
-            return false;
-
-        }
-
-
-        isCalculatingDelivery =
-            true;
-
-        setDeliveryStatus(
-            "تم تحديد موقعك. جارٍ حساب مسافة الطريق وأجرة التوصيل..."
-        );
-
-
-        try {
-
-            const origin =
-                `${RESTAURANT_LOCATION.longitude},${RESTAURANT_LOCATION.latitude}`;
-
-            const destination =
-                `${customerLocation.longitude},${customerLocation.latitude}`;
-
-            const routeURL =
-                `https://router.project-osrm.org/route/v1/driving/${origin};${destination}?overview=false&alternatives=false&steps=false`;
-
-
-            const response =
-                await fetch(
-                    routeURL,
+            onSuccess,
+            function (firstError) {
+                console.warn("تعذر جلب الموقع بالدقة العالية، ستتم إعادة المحاولة:", firstError);
+                navigator.geolocation.getCurrentPosition(
+                    onSuccess,
+                    function (secondError) {
+                        onError(secondError || firstError);
+                    },
                     {
-                        method: "GET",
-                        headers: {
-                            "Accept": "application/json"
-                        }
+                        enableHighAccuracy: false,
+                        timeout: 20000,
+                        maximumAge: 60000
                     }
                 );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "تعذر الاتصال بخدمة حساب المسافة."
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (
-                data.code !== "Ok" ||
-                !data.routes ||
-                !data.routes.length
-            ) {
-
-                throw new Error(
-                    "لم يتم العثور على مسار طريق بين موقعك والمطعم."
-                );
-
-            }
-
-
-            const distanceMeters =
-                Number(data.routes[0].distance);
-
-
-            if (
-                !Number.isFinite(distanceMeters) ||
-                distanceMeters < 0
-            ) {
-
-                throw new Error(
-                    "أعادت خدمة الطرق مسافة غير صالحة."
-                );
-
-            }
-
-
-            deliveryDistanceKm =
-                distanceMeters / 1000;
-
-            deliveryChargedKm =
-                Math.ceil(deliveryDistanceKm);
-
-            deliveryFee =
-                deliveryChargedKm * DELIVERY_PRICE_PER_KM;
-
-
-            setDeliveryStatus(
-                `تم حساب التوصيل بنجاح: ${deliveryDistanceKm.toFixed(2)} كم، وأجرة التوصيل ${formatPrice(deliveryFee)}.`
-            );
-
-
-            updateDeliverySummary();
-            updateCartCounter();
-
-
-            trackEvent(
-                "delivery_route_calculated",
-                {
-                    distance_km:
-                        Number(deliveryDistanceKm.toFixed(2)),
-
-                    charged_km:
-                        deliveryChargedKm,
-
-                    delivery_fee:
-                        deliveryFee,
-
-                    currency:
-                        "SYP"
-                }
-            );
-
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Delivery route calculation error:",
-                error
-            );
-
-
-            deliveryDistanceKm = null;
-            deliveryChargedKm = null;
-            deliveryFee = null;
-
-
-            setDeliveryStatus(
-                "تعذر حساب مسافة الطريق حالياً. تحقق من اتصال الإنترنت وحاول مجدداً. لن يتم إرسال الطلب دون حساب أجرة التوصيل.",
-                true
-            );
-
-
-            updateDeliverySummary();
-            updateCartCounter();
-
-
-            return false;
-
-        } finally {
-
-            isCalculatingDelivery =
-                false;
-
-        }
-
-    }
-
-
-    /* =========================
-       BUILD WHATSAPP MESSAGE
-    ========================== */
-
-    function buildWhatsAppMessage(customer) {
-
-        let message =
-            "🍔 *طلب جديد - بروستد المكحل*\n\n";
-
-
-        message +=
-            "━━━━━━━━━━━━━━\n\n";
-
-
-        message +=
-            "👤 *العميل:*\n" +
-            customer.name +
-            "\n\n";
-
-
-        message +=
-            "📱 *الهاتف:*\n" +
-            customer.phone +
-            "\n\n";
-
-
-        message +=
-            "📍 *العنوان:*\n" +
-            customer.address +
-            "\n\n";
-
-
-        if (
-            customerLocation &&
-            customerLocation.mapUrl
-        ) {
-
-            message +=
-                "🗺️ *موقع العميل على الخريطة:*\n" +
-                customerLocation.mapUrl +
-                "\n\n";
-
-        }
-
-
-        message +=
-            "━━━━━━━━━━━━━━\n\n";
-
-
-        message +=
-            "🛒 *تفاصيل الطلب:*\n\n";
-
-
-        cart.forEach(
-            function (item, index) {
-
-                const price =
-                    safeNumber(
-                        item.price,
-                        0
-                    );
-
-
-                const quantity =
-                    safeNumber(
-                        item.quantity,
-                        1
-                    );
-
-
-                const itemTotal =
-                    price * quantity;
-
-
-                message +=
-                    `${index + 1}️⃣ *${item.name}*\n`;
-
-
-                message +=
-                    `الكمية: ${quantity}\n`;
-
-
-                message +=
-                    `سعر القطعة: ${formatPrice(price)}\n`;
-
-
-                message +=
-                    `الإجمالي: ${formatPrice(itemTotal)}\n\n`;
-
-            }
-        );
-
-
-        message +=
-            "━━━━━━━━━━━━━━\n\n";
-
-
-        message +=
-            "🛒 *قيمة المنتجات:*\n" +
-            formatPrice(getCartTotal()) +
-            "\n\n";
-
-
-        message +=
-            "📏 *مسافة الطريق:*\n" +
-            deliveryDistanceKm.toFixed(2) +
-            " كم\n";
-
-
-        message +=
-            "🧮 *المسافة المعتمدة للحساب:*\n" +
-            deliveryChargedKm +
-            " كم\n";
-
-
-        message +=
-            "🚚 *أجرة التوصيل:*\n" +
-            formatPrice(deliveryFee) +
-            "\n\n";
-
-
-        message +=
-            "💰 *الإجمالي النهائي مع التوصيل:*\n" +
-            formatPrice(
-                getCartTotal() + deliveryFee
-            ) +
-            "\n\n";
-
-
-        if (customer.notes) {
-
-            message +=
-                "📝 *ملاحظات:*\n" +
-                customer.notes +
-                "\n\n";
-
-        }
-
-
-        message +=
-            "━━━━━━━━━━━━━━\n\n";
-
-
-        message +=
-            " شكراً لاختياركم علي بابا 🤍";
-
-
-        return message;
-
-    }
-
-
-    /* =========================
-       SEND ORDER TO WHATSAPP
-    ========================== */
-
-    if (whatsappOrder) {
-
-        whatsappOrder.addEventListener(
-            "click",
-            sendToWhatsApp
-        );
-
-    }
-
-
-    function sendToWhatsApp() {
-
-        /*
-         * التأكد من وجود طلب
-         */
-
-        if (cart.length === 0) {
-
-            trackEvent(
-                "empty_order_attempt"
-            );
-
-
-            alert(
-                "سلة الطلب فارغة 🛒\n\nأضف المنتجات أولاً."
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * الحصول على بيانات الزبون
-         */
-
-        const customer =
-            getCustomerData();
-
-
-        /*
-         * التحقق من بيانات الزبون
-         */
-
-        if (
-            !validateCustomerData(
-                customer
-            )
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * التأكد من تحديد الموقع وحساب أجرة التوصيل
-         */
-
-        if (
-            !customerLocation ||
-            deliveryFee === null ||
-            deliveryDistanceKm === null
-        ) {
-
-            alert(
-                "يرجى تحديد موقعك أولاً عبر زر «تحديد موقعي وحساب التوصيل» وحساب أجرة التوصيل قبل إرسال الطلب."
-            );
-
-
-            const locationButton =
-                document.getElementById(
-                    "detectCustomerLocation"
-                );
-
-
-            if (locationButton) {
-
-                locationButton.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-                locationButton.focus();
-
-            }
-
-            return;
-
-        }
-
-
-        if (isCalculatingDelivery) {
-
-            alert(
-                "جارٍ حساب أجرة التوصيل، يرجى الانتظار قليلاً ثم المحاولة مجدداً."
-            );
-
-            return;
-
-        }
-
-
-        const finalTotal =
-            getCartTotal() + deliveryFee;
-
-
-        trackEvent(
-            "begin_checkout",
+            },
             {
-                currency: "SYP",
-
-                value:
-                    finalTotal,
-
-                items:
-                    getAnalyticsItems()
+                enableHighAccuracy: true,
+                timeout: 12000,
+                maximumAge: 0
             }
         );
-
-
-        const analyticsItems =
-            getAnalyticsItems();
-
-        const analyticsItemCount =
-            getCartCount();
-
-        const analyticsTotal =
-            finalTotal;
-
-
-        const message =
-            buildWhatsAppMessage(
-                customer
-            );
-
-
-        const whatsappURL =
-            `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-
-
-        const whatsappWindow =
-            window.open(
-                whatsappURL,
-                "_blank",
-                "noopener,noreferrer"
-            );
-
-
-        if (whatsappWindow) {
-
-            trackEvent(
-                "whatsapp_order",
-                {
-                    currency: "SYP",
-
-                    value:
-                        analyticsTotal,
-
-                    items_count:
-                        analyticsItemCount,
-
-                    items:
-                        analyticsItems,
-
-                    order_channel:
-                        "whatsapp",
-
-                    delivery_fee:
-                        deliveryFee,
-
-                    delivery_distance_km:
-                        Number(deliveryDistanceKm.toFixed(2))
-                }
-            );
-
-
-            /*
-             * تفريغ السلة بعد فتح واتساب
-             */
-
-            cart = [];
-
-
-            renderCart();
-
-
-            clearCustomerForm();
-
-
-            closeCartPanel();
-
-
-            setTimeout(
-                function () {
-
-                    alert(
-                        "تم تجهيز طلبك بنجاح ✅\n\nتم فتح واتساب لإرسال الطلب.\n\nيمكنك التواصل معنا عبر واتساب إذا أردت إجراء أي تعديل."
-                    );
-
-                },
-                250
-            );
-
-        } else {
-
-            trackEvent(
-                "whatsapp_open_failed",
-                {
-                    currency: "SYP",
-
-                    value:
-                        analyticsTotal,
-
-                    items_count:
-                        analyticsItemCount
-                }
-            );
-
-
-            alert(
-                "تعذر فتح واتساب تلقائيًا.\n\nيرجى السماح بالنوافذ المنبثقة لهذا الموقع ثم المحاولة مرة أخرى."
-            );
-
-        }
-
     }
 
-
-    /* =========================
-       CLEAR CUSTOMER FORM
-    ========================== */
-
-    function clearCustomerForm() {
-
-        const customerName =
-            document.getElementById(
-                "customerName"
-            );
-
-
-        const customerPhone =
-            document.getElementById(
-                "customerPhone"
-            );
-
-
-        const customerAddress =
-            document.getElementById(
-                "customerAddress"
-            );
-
-
-        const customerNotes =
-            document.getElementById(
-                "customerNotes"
-            );
-
-
-        if (customerName) {
-
-            customerName.value = "";
-
+    // استدعاء خدمة توجيه طرق القيادة. لا نستخدم حساب المسافة بخط مستقيم مطلقاً.
+    async function requestRoadRoute(url) {
+        const response = await fetch(url, { method: "GET" });
+        if (!response.ok) {
+            throw new Error(`خدمة الطرق أعادت حالة HTTP ${response.status}`);
         }
 
-
-        if (customerPhone) {
-
-            customerPhone.value = "";
-
+        const data = await response.json();
+        if (
+            data.code !== "Ok" ||
+            !Array.isArray(data.routes) ||
+            !data.routes.length ||
+            !Number.isFinite(Number(data.routes[0].distance))
+        ) {
+            throw new Error("لم يتم العثور على مسار قيادة صالح بين المطعم والعميل.");
         }
 
+        return Number(data.routes[0].distance) / 1000;
+    }
 
-        if (customerAddress) {
+    function fetchRouteDistance(lat1, lon1, lat2, lon2, callback) {
+        const coordinates = `${lon1},${lat1};${lon2},${lat2}`;
+        const routeProviders = [
+            `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=false&alternatives=false&steps=false`,
+            `https://routing.openstreetmap.de/routed-car/route/v1/driving/${coordinates}?overview=false&alternatives=false&steps=false`
+        ];
 
-            customerAddress.value = "";
+        (async function () {
+            let lastError = null;
 
+            for (const routeUrl of routeProviders) {
+                try {
+                    const distanceKm = await requestRoadRoute(routeUrl);
+                    if (!(distanceKm > 0)) {
+                        throw new Error("المسافة التي أعادتها خدمة الطرق غير صالحة.");
+                    }
+                    callback(null, distanceKm);
+                    return;
+                } catch (error) {
+                    lastError = error;
+                    console.warn("تعذر حساب الطريق من مزود خرائط، ستتم تجربة المزود البديل:", error);
+                }
+            }
+
+            callback(lastError || new Error("تعذر حساب مسار القيادة حالياً."), null);
+        })();
+    }
+        function detectCustomerLocation() {
+        if (currentMode !== "alibaba") return;
+
+        customerLocationAttempted = true;
+        customerLocationStatus = "pending";
+        customerCoordinates = null;
+        window.customerLocationLink = "غير محدد";
+        deliveryFee = 0;
+        deliveryDistanceKm = 0;
+
+        if (getLocationBtn) {
+            getLocationBtn.disabled = true;
+            getLocationBtn.textContent = "⏳ جارٍ تحديد الموقع وحساب مسار الطريق...";
         }
 
-
-        if (customerNotes) {
-
-            customerNotes.value = "";
-
-        }
-
-
-        customerLocation = null;
-        deliveryDistanceKm = null;
-        deliveryChargedKm = null;
-        deliveryFee = null;
-
-
-        setDeliveryStatus(
-            "حدد موقعك لحساب أجرة التوصيل."
-        );
-
-
-        updateDeliverySummary();
+        setDeliveryStatus("جارٍ طلب موقعك من الجهاز ثم حساب مسافة القيادة عبر الطرق...");
         updateCartCounter();
+        updateDeliverySummary();
 
+        requestBrowserLocation(
+            function (position) {
+                const userLat = Number(position.coords.latitude);
+                const userLon = Number(position.coords.longitude);
 
-        if (deliveryLocationButton) {
+                if (!Number.isFinite(userLat) || !Number.isFinite(userLon)) {
+                    handleLocationFailure(new Error("إحداثيات الموقع غير صالحة."));
+                    return;
+                }
 
-            deliveryLocationButton.disabled =
-                false;
+                customerCoordinates = { latitude: userLat, longitude: userLon };
+                window.customerLocationLink = `https://www.google.com/maps?q=${userLat},${userLon}`;
 
-            deliveryLocationButton.textContent =
-                "📍 تحديد موقعي وحساب التوصيل";
+                setDeliveryStatus("تم تحديد موقعك. جارٍ حساب مسار القيادة الفعلي إلى المطعم...");
 
-        }
+                fetchRouteDistance(
+                    RESTAURANT_LOCATION.latitude,
+                    RESTAURANT_LOCATION.longitude,
+                    userLat,
+                    userLon,
+                    function (error, distanceKm) {
+                        if (error || !Number.isFinite(distanceKm)) {
+                            handleLocationFailure(new Error("تم تحديد الموقع، لكن تعذر الحصول على مسار قيادة موثوق. يمكنك إرسال الطلب بالعنوان المكتوب، وسيتم تأكيد أجرة التوصيل مع المطعم."));
+                            return;
+                        }
 
-    }
+                        deliveryDistanceKm = distanceKm;
+                        const chargedKm = Math.ceil(distanceKm);
+                        deliveryFee = chargedKm * DELIVERY_PRICE_PER_KM;
+                        customerLocationStatus = "success";
 
+                        if (getLocationBtn) {
+                            getLocationBtn.disabled = false;
+                            getLocationBtn.textContent = `✓ تم حساب مسافة الطريق (${distanceKm.toFixed(1)} كم)`;
+                        }
 
-    /* =========================
-       EDIT ORDER VIA WHATSAPP
-    ========================== */
-
-    const editOrderWhatsApp =
-        document.getElementById(
-            "editOrderWhatsApp"
-        );
-
-
-    if (editOrderWhatsApp) {
-
-        editOrderWhatsApp.addEventListener(
-            "click",
-            function () {
-
-                /*
-                 * Analytics:
-                 * طلب تعديل عبر WhatsApp
-                 */
-
-                trackEvent(
-                    "edit_order_whatsapp",
-                    {
-                        order_channel:
-                            "whatsapp"
+                        setDeliveryStatus(`تم تحديد موقعك وحساب مسافة الطريق بنجاح: ${distanceKm.toFixed(1)} كم. أجرة التوصيل ${formatPrice(deliveryFee)}.`);
+                        updateCartCounter();
+                        updateDeliverySummary();
                     }
                 );
-
-
-                const message =
-                    "مرحباً مولانا برغر 👋\n\n" +
-                    "أرغب بتعديل طلبي الذي أرسلته مسبقاً عبر واتساب.\n\n" +
-                    "يرجى مساعدتي في تعديل الطلب.\n\n" +
-                    "شكراً لكم 🤍";
-
-
-                const whatsappURL =
-                    `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-
-
-                window.open(
-                    whatsappURL,
-                    "_blank",
-                    "noopener,noreferrer"
-                );
-
-            }
+            },
+            handleLocationFailure
         );
-
     }
 
+    function handleLocationFailure(error) {
+        customerLocationStatus = "failed";
+        deliveryFee = 0;
+        deliveryDistanceKm = 0;
 
-    /* =========================
-       INITIAL LOAD
-    ========================== */
+        if (getLocationBtn) {
+            getLocationBtn.disabled = false;
+            getLocationBtn.textContent = "📍 إعادة تحديد موقعي وحساب التوصيل";
+        }
 
-    cart = [];
+        const reason = error && error.message
+            ? error.message
+            : "تعذر تحديد الموقع أو حساب مسار القيادة.";
 
+        setDeliveryStatus(`${reason} يمكنك متابعة الطلب باستخدام العنوان المكتوب، وستُحدد أجرة التوصيل مع المطعم.`, true);
+        updateCartCounter();
+        updateDeliverySummary();
+    }
 
+    // إنشاء واجهة التوصيل وربط زر الموقع، دون الحاجة إلى تعديل HTML أو CSS.
     injectDeliveryUI();
 
+    document.addEventListener("click", function(e) {
+        const btn = e.target.closest(".add-to-cart-btn, .drink-add-btn, .small-add-to-cart-btn");
+        if (btn) {
+            const card = btn.closest(".product-card, .drink-item, .small-product");
+            if (card) {
+                addToCart({
+                    id: card.dataset.id,
+                    name: card.dataset.name,
+                    price: card.dataset.price,
+                    image: card.dataset.image
+                }, btn);
+            }
+        }
+    });
 
-    renderCart();
+    if (whatsappOrder) {
+        whatsappOrder.addEventListener("click", function () {
+            if (cart.length === 0) {
+                alert("سلة الطلب فارغة!");
+                return;
+            }
 
+            const customerName = document.getElementById("customerName")?.value.trim() || "";
+            if (!customerName) {
+                alert("يرجى إدخال اسم الزبون.");
+                return;
+            }
 
-    updateCartCounter();
+            const subtotal = calculateSubtotal();
+            const totalPieces = calculateTotalPieces();
+            const alibabaFee = calculateAlibabaServiceFee(subtotal, totalPieces);
+            const customerNotes = document.getElementById("customerNotes")?.value.trim() || "لا توجد ملاحظات";
 
+            let whatsappMessage = "";
+            let targetPhone = "";
 
-    updateDeliverySummary();
+            if (currentMode === 'alibaba') {
+                targetPhone = ALIBABA_WHATSAPP;
+                const customerPhone = document.getElementById("customerPhone")?.value.trim() || "";
+                const customerAddress = document.getElementById("customerAddress")?.value.trim() || "";
+
+                if (!customerPhone) {
+                    alert("يرجى إدخال رقم الهاتف.");
+                    document.getElementById("customerPhone")?.focus();
+                    return;
+                }
+
+                if (!customerAddress) {
+                    alert("يرجى إدخال عنوان التوصيل.");
+                    document.getElementById("customerAddress")?.focus();
+                    return;
+                }
+
+                if (!customerLocationAttempted || customerLocationStatus === "not_attempted") {
+                    alert("يرجى الضغط على زر تحديد الموقع مرة واحدة على الأقل. إذا تعذر تحديد الموقع يمكنك متابعة الطلب بالعنوان المكتوب.");
+                    return;
+                }
+
+                if (customerLocationStatus === "pending") {
+                    alert("يرجى الانتظار حتى تنتهي عملية تحديد الموقع وحساب مسار الطريق.");
+                    return;
+                }
+
+                const locationLink = customerLocationStatus === "success"
+                    ? window.customerLocationLink
+                    : (window.customerLocationLink !== "غير محدد"
+                        ? `${window.customerLocationLink} (تعذر حساب مسار الطريق؛ يرجى تأكيد أجرة التوصيل)`
+                        : "تعذر تحديد الموقع الجغرافي؛ يرجى الاعتماد على العنوان المكتوب");
+
+                let finalTotal = subtotal + deliveryFee + alibabaFee;
+
+                whatsappMessage = `*طلب جديد عبر منصة علي بابا*\n\n` +
+                    `*اسم المطعم:* بروستد المكحل\n` +
+                    `*اسم الزبون:* ${customerName}\n` +
+                    `*رقم الهاتف:* ${customerPhone}\n` +
+                    `*العنوان:* ${customerAddress}\n` +
+                    `*الموقع الجغرافي:* ${locationLink}\n` +
+                    `*ملاحظات:* ${customerNotes}\n\n` +
+                    `*تفاصيل الطلب:*\n`;
+
+                cart.forEach((item, index) => {
+                    whatsappMessage += `${index + 1}. ${item.name} × ${item.quantity} - ${(item.price).toLocaleString()} ل.س\n`;
+                });
+
+                whatsappMessage += `\n------------------\n` +
+                    `🛒 قيمة المنتجات: *${subtotal.toLocaleString()} ل.س*\n` +
+                    `🚚 أجرة التوصيل المحسوبة: *${deliveryFee.toLocaleString()} ل.س*\n` +
+                    `${customerLocationStatus === "success" ? "" : "⚠️ لم يتم احتساب أجرة التوصيل عبر مسار قيادة؛ يرجى تأكيدها مع المطعم.\n"}` +
+                    `⚙️ رسوم خدمة علي بابا: *${alibabaFee.toLocaleString()} ل.س*\n` +
+                    `💰 الإجمالي النهائي: *${finalTotal.toLocaleString()} ل.س*`;
+
+            } else {
+                targetPhone = RESTAURANT_WHATSAPP;
+                const customerTable = document.getElementById("customerTable")?.value.trim() || "";
+
+                if (!customerTable) {
+                    alert("يرجى إدخال رقم الطاولة.");
+                    return;
+                }
+
+                whatsappMessage = `*طلب محلي (صالة)*\n\n` +
+                    `*اسم المطعم:* بروستد المكحل\n` +
+                    `*اسم الزبون:* ${customerName}\n` +
+                    `*رقم الطاولة:* ${customerTable}\n` +
+                    `*ملاحظات:* ${customerNotes}\n\n` +
+                    `*تفاصيل الطلب:*\n`;
+
+                cart.forEach((item, index) => {
+                    whatsappMessage += `${index + 1}. ${item.name} × ${item.quantity} - ${(item.price ).toLocaleString()} ل.س\n`;
+                });
+
+                whatsappMessage += `\n------------------\n` +
+                    `💰 الإجمالي النهائي: *${subtotal.toLocaleString()} ل.س*`;
+            }
+
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    }
+
+    if (floatingCart && cartOverlay) {
+        floatingCart.addEventListener("click", () => cartOverlay.classList.add("show"));
+    }
+    if (closeCart && cartOverlay) {
+        closeCart.addEventListener("click", () => cartOverlay.classList.remove("show"));
+    }
+    if (cartOverlay) {
+        cartOverlay.addEventListener("click", (e) => {
+            if (e.target === cartOverlay) cartOverlay.classList.remove("show");
+        });
+    }
 
 });
