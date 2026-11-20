@@ -299,28 +299,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
     applyModeUI();
 
-    function applyModeUI() {
-        const offersSection = document.getElementById("offers");
-        const tableNumberGroup = document.getElementById("tableNumberGroup");
-        const alibabaDeliveryFields = document.getElementById("alibabaDeliveryFields");
-        const deliveryFeeRow = document.getElementById("deliveryFeeRow");
-        const alibabaFeeRow = document.getElementById("alibabaFeeRow");
+function applyModeUI() {
+    document.body.classList.toggle("alibaba-mode", currentMode === "alibaba");
 
-        if (currentMode === 'alibaba') {
-            if (offersSection) offersSection.style.display = "block";
-            if (tableNumberGroup) tableNumberGroup.style.display = "none";
-            if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "block";
-            if (deliveryFeeRow) deliveryFeeRow.style.display = "flex";
-            if (alibabaFeeRow) alibabaFeeRow.style.display = "flex";
-        } else {
-            if (offersSection) offersSection.style.display = "block";
-            if (tableNumberGroup) tableNumberGroup.style.display = "block";
-            if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "none";
-            if (deliveryFeeRow) deliveryFeeRow.style.display = "none";
-            if (alibabaFeeRow) alibabaFeeRow.style.display = "none";
-        }
+    const offersSection = document.getElementById("offers");
+    const tableNumberGroup = document.getElementById("tableNumberGroup");
+    const alibabaDeliveryFields = document.getElementById("alibabaDeliveryFields");
+
+    const cartSubtotalRow = document.getElementById("cartSubtotalRow");
+    const deliveryFeeRow = document.getElementById("deliveryFeeRow");
+    const alibabaFeeRow = document.getElementById("alibabaFeeRow");
+
+    if (currentMode === "alibaba") {
+        if (offersSection) offersSection.style.display = "block";
+        if (tableNumberGroup) tableNumberGroup.style.display = "none";
+        if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "block";
+
+        // إخفاء تفاصيل الأسعار من السلة
+        if (cartSubtotalRow) cartSubtotalRow.style.display = "none";
+        if (deliveryFeeRow) deliveryFeeRow.style.display = "none";
+        if (alibabaFeeRow) alibabaFeeRow.style.display = "none";
+
+    } else {
+        if (offersSection) offersSection.style.display = "block";
+        if (tableNumberGroup) tableNumberGroup.style.display = "block";
+        if (alibabaDeliveryFields) alibabaDeliveryFields.style.display = "none";
+
+        // الوضع العادي يبقى كما كان
+        if (cartSubtotalRow) cartSubtotalRow.style.display = "flex";
+        if (deliveryFeeRow) deliveryFeeRow.style.display = "none";
+        if (alibabaFeeRow) alibabaFeeRow.style.display = "none";
     }
-
+}
     function trackEvent(eventName, parameters = {}) {
         if (typeof window.gtag !== "function") return;
         try {
@@ -361,7 +371,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const numericPrice = safeNumber(price);
         return numericPrice.toLocaleString("ar") + " ل.س";
     }
-        function renderMenuProducts() {
+
+    function renderMenuProducts() {
         const offersGrid = document.getElementById("offersGrid");
         const burgersGrid = document.getElementById("burgersGrid");
         const mealsGrid = document.getElementById("mealsGrid");
@@ -468,12 +479,129 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    /* =====================================================
+       CART CORE — إضافة المنتجات وتحديث زر السلة والكميات
+    ===================================================== */
+    function updateCartCounter() {
+        const count = getCartCount();
+
+        if (cartCount) cartCount.textContent = String(count);
+
+        if (cartBadge) {
+            cartBadge.textContent = String(count);
+            cartBadge.style.display = count > 0 ? "flex" : "none";
+        }
+
+        if (floatingCart) {
+            const hasItems = count > 0;
+
+            floatingCart.classList.toggle("is-hidden", !hasItems);
+            floatingCart.classList.toggle("has-items", hasItems);
+            floatingCart.setAttribute("aria-hidden", hasItems ? "false" : "true");
+            floatingCart.tabIndex = hasItems ? 0 : -1;
+
+            // دعم ملفات CSS القديمة التي تعتمد على display مباشرة.
+            floatingCart.style.display = hasItems ? "flex" : "none";
+        }
+
+        const subtotal = calculateSubtotal();
+        const pieces = calculateTotalPieces();
+
+        const subtotalElement = document.getElementById("cartSubtotal");
+        const totalElement = document.getElementById("cartTotal");
+        const deliveryElement = document.getElementById("cartDeliveryFee");
+        const alibabaFeeElement = document.getElementById("cartAlibabaFee");
+
+        if (subtotalElement) subtotalElement.textContent = formatPrice(subtotal);
+        if (deliveryElement) deliveryElement.textContent = formatPrice(deliveryFee);
+
+        const serviceFee = calculateAlibabaServiceFee(subtotal, pieces);
+
+        if (alibabaFeeElement) alibabaFeeElement.textContent = formatPrice(serviceFee);
+        if (totalElement) totalElement.textContent = formatPrice(subtotal + deliveryFee + serviceFee);
+    }
+
+    function addToCart(product, button) {
+        if (!product || !product.id) return;
+
+        const id = String(product.id);
+        const existing = cart.find(item => String(item.id) === id);
+
+        if (existing) {
+            existing.quantity = safeNumber(existing.quantity, 0) + 1;
+        } else {
+            cart.push({
+                id,
+                name: String(product.name || "منتج"),
+                price: safeNumber(product.price, 0),
+                image: String(product.image || ""),
+                quantity: 1
+            });
+        }
+
+        renderCart();
+
+        if (button) {
+            const oldText = button.innerHTML;
+
+            button.classList.add("added");
+            button.innerHTML = "<span>✓</span> تمت الإضافة";
+
+            window.setTimeout(() => {
+                button.innerHTML = oldText;
+                button.classList.remove("added");
+            }, 900);
+        }
+
+        if (floatingCart) floatingCart.classList.add("cart-bounce");
+
+        window.setTimeout(() => {
+            floatingCart && floatingCart.classList.remove("cart-bounce");
+        }, 450);
+    }
+
+    function increaseQuantity(id) {
+        const item = cart.find(product => String(product.id) === String(id));
+
+        if (!item) return;
+
+        item.quantity = safeNumber(item.quantity, 0) + 1;
+        renderCart();
+    }
+
+    function decreaseQuantity(id) {
+        const item = cart.find(product => String(product.id) === String(id));
+
+        if (!item) return;
+
+        item.quantity = safeNumber(item.quantity, 0) - 1;
+
+        if (item.quantity <= 0) {
+            cart = cart.filter(product => String(product.id) !== String(id));
+        }
+
+        renderCart();
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(item => String(item.id) !== String(id));
+        renderCart();
+    }
+
+    // لأن أزرار الكمية والحذف تُنشأ ديناميكياً وتستخدم onclick داخل HTML.
+    window.addToCart = addToCart;
+    window.increaseQuantity = increaseQuantity;
+    window.decreaseQuantity = decreaseQuantity;
+    window.removeFromCart = removeFromCart;
+
     function getCartCount() {
         return cart.reduce((total, item) => total + safeNumber(item.quantity, 0), 0);
     }
 
     function calculateSubtotal() {
-        return cart.reduce((total, item) => total + (safeNumber(item.price, 0) * safeNumber(item.quantity, 0)), 0);
+        return cart.reduce((total, item) => {
+            return total + (safeNumber(item.price, 0) * safeNumber(item.quantity, 0));
+        }, 0);
     }
 
     function calculateTotalPieces() {
@@ -482,110 +610,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function calculateAlibabaServiceFee(subtotal, totalPieces) {
         if (currentMode !== 'alibaba') return 0;
+
         if (subtotal > 1000) {
             return Math.round(subtotal * 0.03);
         } else {
             return totalPieces * 10;
         }
     }
-    /* =====================================================
-   ALIBABA — ORDER REVIEW SECTION
-   مراجعة الطلب داخل السلة
-===================================================== */
 
-    function updateCartCounter() {
-        const count = getCartCount();
-        const subtotal = calculateSubtotal();
-        const totalPieces = calculateTotalPieces();
-        const alibabaFee = calculateAlibabaServiceFee(subtotal, totalPieces);
-
-        if (cartCount) {
-            cartCount.textContent = count === 0 ? "السلة فارغة" : (count === 1 ? "صنف واحد" : count + " أصناف");
-        }
-        if (cartBadge) {
-            cartBadge.textContent = count;
-        }
-        if (floatingCart) {
-            floatingCart.classList.toggle("has-items", count > 0);
-        }
-
-        const subtotalEl = document.getElementById("cartSubtotal");
-        const deliveryFeeEl = document.getElementById("cartDeliveryFee");
-        const alibabaFeeEl = document.getElementById("cartAlibabaFee");
-        const totalEl = document.getElementById("cartTotal");
-
-        if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
-        if (deliveryFeeEl) deliveryFeeEl.textContent = formatPrice(deliveryFee);
-        if (alibabaFeeEl) alibabaFeeEl.textContent = formatPrice(alibabaFee);
-
-        let finalTotal = subtotal;
-        if (currentMode === 'alibaba') {
-            finalTotal += deliveryFee + alibabaFee;
-        }
-        if (totalEl) {
-            totalEl.textContent = formatPrice(finalTotal);
-        }
-    
-    }
-
-    function addToCart(product, buttonElement) {
-        if (!product || !product.id) return;
-        const productId = String(product.id);
-        const productPrice = safeNumber(product.price, 0);
-
-        const existingProduct = cart.find(item => String(item.id) === productId);
-
-        if (existingProduct) {
-            existingProduct.quantity = safeNumber(existingProduct.quantity, 0) + 1;
-        } else {
-            cart.push({
-                id: productId,
-                name: String(product.name || "منتج"),
-                price: productPrice,
-                image: product.image ? String(product.image) : "",
-                quantity: 1
-            });
-        }
-
-        if (buttonElement) {
-            buttonElement.classList.add("added");
-            const originalText = buttonElement.innerHTML;
-            if (!buttonElement.querySelector("span.check")) {
-                buttonElement.innerHTML = "<span>✓ تم الإضافة</span>";
-            }
-            setTimeout(() => {
-                buttonElement.classList.remove("added");
-                buttonElement.innerHTML = originalText;
-            }, 1000);
-        }
-
-        renderCart();
-    }
-
-    window.removeFromCart = function(productId) {
-        cart = cart.filter(item => String(item.id) !== String(productId));
-        renderCart();
-    };
-
-    window.increaseQuantity = function(productId) {
-        const product = cart.find(item => String(item.id) === String(productId));
-        if (product) {
-            product.quantity = safeNumber(product.quantity, 0) + 1;
-            renderCart();
-        }
-    };
-
-    window.decreaseQuantity = function(productId) {
-        const product = cart.find(item => String(item.id) === String(productId));
-        if (!product) return;
-        const currentQuantity = safeNumber(product.quantity, 1);
-        if (currentQuantity > 1) {
-            product.quantity = currentQuantity - 1;
-            renderCart();
-        } else {
-            removeFromCart(productId);
-        }
-    };
 function renderCart() {
     if (!cartItems) return;
 
@@ -644,9 +676,11 @@ function renderCart() {
                         aria-label="حذف المنتج"
                     >🗑️</button>
 
-                    <strong>
-                        ${formatPrice(item.price * item.quantity)}
-                    </strong>
+                    ${currentMode !== "alibaba" ? `
+                        <strong>
+                            ${formatPrice(item.price * item.quantity)}
+                        </strong>
+                    ` : ""}
                 </div>
             `;
 
@@ -656,16 +690,25 @@ function renderCart() {
 
     updateCartCounter();
 }
-        /* =====================================================
+    /* =====================================================
        DELIVERY LOCATION & ROAD ROUTING
        لا يوجد أي رجوع لحساب الخط المستقيم.
        أجرة التوصيل لا تحسب إلا من مسار قيادة فعلي.
     ===================================================== */
+    let deliveryAddressGroup = null;
+    let deliveryFallbackMessage = null;
 
     function injectDeliveryUI() {
         if (currentMode !== "alibaba") return;
 
         const customerAddress = document.getElementById("customerAddress");
+        deliveryAddressGroup = customerAddress
+        ? customerAddress.closest(".form-group")
+        : null;
+
+    if (deliveryAddressGroup) {
+        deliveryAddressGroup.style.display = "none";
+        }
 
         // استخدم زر HTML الموجود إن وجد، وإلا أنشئ الزر بعد حقل العنوان.
         getLocationBtn =
@@ -674,9 +717,11 @@ function renderCart() {
 
         if (!getLocationBtn && customerAddress) {
             deliveryLocationButton = document.createElement("button");
+
             deliveryLocationButton.id = "detectCustomerLocation";
             deliveryLocationButton.type = "button";
             deliveryLocationButton.textContent = "📍 تحديد موقعي وحساب التوصيل";
+
             deliveryLocationButton.style.cssText = [
                 "display:block",
                 "width:100%",
@@ -708,11 +753,14 @@ function renderCart() {
         }
 
         deliveryStatusElement = document.getElementById("deliveryLocationStatus");
+
         if (!deliveryStatusElement && getLocationBtn) {
             deliveryStatusElement = document.createElement("p");
+
             deliveryStatusElement.id = "deliveryLocationStatus";
             deliveryStatusElement.setAttribute("role", "status");
             deliveryStatusElement.setAttribute("aria-live", "polite");
+
             deliveryStatusElement.style.cssText = [
                 "margin:8px 0 0",
                 "font:inherit",
@@ -720,13 +768,40 @@ function renderCart() {
                 "line-height:1.7",
                 "color:#555"
             ].join(";");
+
             getLocationBtn.insertAdjacentElement("afterend", deliveryStatusElement);
         }
+        deliveryFallbackMessage = document.createElement("p");
+
+deliveryFallbackMessage.id = "deliveryFallbackMessage";
+deliveryFallbackMessage.textContent =
+    "تعذر تحديد موقعك تلقائياً. يرجى كتابة عنوان التوصيل بالتفصيل حتى يتمكن المطعم من إيصال طلبك.";
+
+deliveryFallbackMessage.style.cssText = `
+    display: none;
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 10px;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 13px;
+    line-height: 1.8;
+`;
+
+if (deliveryAddressGroup) {
+    deliveryAddressGroup.insertAdjacentElement(
+        "beforebegin",
+        deliveryFallbackMessage
+    );
+}
 
         deliverySummaryElement = document.getElementById("deliverySummary");
+
         if (!deliverySummaryElement) {
             deliverySummaryElement = document.createElement("div");
+
             deliverySummaryElement.id = "deliverySummary";
+
             deliverySummaryElement.style.cssText = [
                 "margin-top:10px",
                 "padding:12px",
@@ -766,28 +841,22 @@ function renderCart() {
         }
     }
 
-    function updateDeliverySummary() {
-        if (!deliverySummaryElement) {
-            deliverySummaryElement = document.getElementById("deliverySummary");
-        }
-        if (!deliverySummaryElement || currentMode !== "alibaba") return;
-
-        const distanceText = deliveryDistanceKm > 0
-            ? `${deliveryDistanceKm.toFixed(1)} كم عبر الطريق`
-            : "لم يتم حساب مسار الطريق بعد";
-
-        const feeText = deliveryDistanceKm > 0
-            ? formatPrice(deliveryFee)
-            : formatPrice(0);
-
-        deliverySummaryElement.innerHTML = `
-            <div><strong>📍 مسافة التوصيل:</strong> ${escapeHTML(distanceText)}</div>
-            <div><strong>🚚 أجرة التوصيل:</strong> ${escapeHTML(feeText)}</div>
-            <div style="font-size:12px;color:#666;margin-top:4px">
-                يتم احتساب الأجرة على أساس مسار القيادة الفعلي، مع تقريب الكيلومترات إلى الأعلى.
-            </div>
-        `;
+function updateDeliverySummary() {
+    if (!deliverySummaryElement) {
+        deliverySummaryElement = document.getElementById("deliverySummary");
     }
+
+    if (!deliverySummaryElement) return;
+
+    // إخفاء تفاصيل التوصيل من سلة علي بابا فقط
+    if (currentMode === "alibaba") {
+        deliverySummaryElement.style.display = "none";
+        deliverySummaryElement.innerHTML = "";
+        return;
+    }
+
+    deliverySummaryElement.style.display = "";
+}
 
     // طلب الموقع من المتصفح: يبدأ بدقة عالية ثم يعيد المحاولة بإعدادات أكثر مرونة.
     function requestBrowserLocation(onSuccess, onError) {
@@ -800,6 +869,7 @@ function renderCart() {
             onSuccess,
             function (firstError) {
                 console.warn("تعذر جلب الموقع بالدقة العالية، ستتم إعادة المحاولة:", firstError);
+
                 navigator.geolocation.getCurrentPosition(
                     onSuccess,
                     function (secondError) {
@@ -823,11 +893,13 @@ function renderCart() {
     // استدعاء خدمة توجيه طرق القيادة. لا نستخدم حساب المسافة بخط مستقيم مطلقاً.
     async function requestRoadRoute(url) {
         const response = await fetch(url, { method: "GET" });
+
         if (!response.ok) {
             throw new Error(`خدمة الطرق أعادت حالة HTTP ${response.status}`);
         }
 
         const data = await response.json();
+
         if (
             data.code !== "Ok" ||
             !Array.isArray(data.routes) ||
@@ -842,6 +914,7 @@ function renderCart() {
 
     function fetchRouteDistance(lat1, lon1, lat2, lon2, callback) {
         const coordinates = `${lon1},${lat1};${lon2},${lat2}`;
+
         const routeProviders = [
             `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=false&alternatives=false&steps=false`,
             `https://routing.openstreetmap.de/routed-car/route/v1/driving/${coordinates}?overview=false&alternatives=false&steps=false`
@@ -853,27 +926,37 @@ function renderCart() {
             for (const routeUrl of routeProviders) {
                 try {
                     const distanceKm = await requestRoadRoute(routeUrl);
+
                     if (!(distanceKm > 0)) {
                         throw new Error("المسافة التي أعادتها خدمة الطرق غير صالحة.");
                     }
+
                     callback(null, distanceKm);
                     return;
+
                 } catch (error) {
                     lastError = error;
-                    console.warn("تعذر حساب الطريق من مزود خرائط، ستتم تجربة المزود البديل:", error);
+
+                    console.warn(
+                        "تعذر حساب الطريق من مزود خرائط، ستتم تجربة المزود البديل:",
+                        error
+                    );
                 }
             }
 
             callback(lastError || new Error("تعذر حساب مسار القيادة حالياً."), null);
         })();
     }
-        function detectCustomerLocation() {
+
+    function detectCustomerLocation() {
         if (currentMode !== "alibaba") return;
 
         customerLocationAttempted = true;
         customerLocationStatus = "pending";
         customerCoordinates = null;
+
         window.customerLocationLink = "غير محدد";
+
         deliveryFee = 0;
         deliveryDistanceKm = 0;
 
@@ -883,6 +966,7 @@ function renderCart() {
         }
 
         setDeliveryStatus("جارٍ طلب موقعك من الجهاز ثم حساب مسافة القيادة عبر الطرق...");
+
         updateCartCounter();
         updateDeliverySummary();
 
@@ -896,7 +980,11 @@ function renderCart() {
                     return;
                 }
 
-                customerCoordinates = { latitude: userLat, longitude: userLon };
+                customerCoordinates = {
+                    latitude: userLat,
+                    longitude: userLon
+                };
+
                 window.customerLocationLink = `https://www.google.com/maps?q=${userLat},${userLon}`;
 
                 setDeliveryStatus("تم تحديد موقعك. جارٍ حساب مسار القيادة الفعلي إلى المطعم...");
@@ -908,21 +996,38 @@ function renderCart() {
                     userLon,
                     function (error, distanceKm) {
                         if (error || !Number.isFinite(distanceKm)) {
-                            handleLocationFailure(new Error("تم تحديد الموقع، لكن تعذر الحصول على مسار قيادة موثوق. يمكنك إرسال الطلب بالعنوان المكتوب، وسيتم تأكيد أجرة التوصيل مع المطعم."));
+                            handleLocationFailure(
+                                new Error(
+                                    "تم تحديد الموقع، لكن تعذر الحصول على مسار قيادة موثوق. يمكنك إرسال الطلب بالعنوان المكتوب، وسيتم تأكيد أجرة التوصيل مع المطعم."
+                                )
+                            );
+
                             return;
                         }
 
                         deliveryDistanceKm = distanceKm;
+
                         const chargedKm = Math.ceil(distanceKm);
+
                         deliveryFee = chargedKm * DELIVERY_PRICE_PER_KM;
                         customerLocationStatus = "success";
+                        if (deliveryAddressGroup) {
+                       deliveryAddressGroup.style.display = "none";
+                                }
+
+                        if (deliveryFallbackMessage) {
+                            deliveryFallbackMessage.style.display = "none";
+                                }
 
                         if (getLocationBtn) {
                             getLocationBtn.disabled = false;
                             getLocationBtn.textContent = `✓ تم حساب مسافة الطريق (${distanceKm.toFixed(1)} كم)`;
                         }
 
-                        setDeliveryStatus(`تم تحديد موقعك وحساب مسافة الطريق بنجاح: ${distanceKm.toFixed(1)} كم. أجرة التوصيل ${formatPrice(deliveryFee)}.`);
+                        setDeliveryStatus(
+                            `تم تحديد موقعك وحساب مسافة الطريق بنجاح: ${distanceKm.toFixed(1)} كم. أجرة التوصيل ${formatPrice(deliveryFee)}.`
+                        );
+
                         updateCartCounter();
                         updateDeliverySummary();
                     }
@@ -933,31 +1038,52 @@ function renderCart() {
     }
 
     function handleLocationFailure(error) {
-        customerLocationStatus = "failed";
-        deliveryFee = 0;
-        deliveryDistanceKm = 0;
+    customerLocationStatus = "failed";
 
-        if (getLocationBtn) {
-            getLocationBtn.disabled = false;
-            getLocationBtn.textContent = "📍 إعادة تحديد موقعي وحساب التوصيل";
-        }
+    deliveryFee = 0;
+    deliveryDistanceKm = 0;
 
-        const reason = error && error.message
-            ? error.message
-            : "تعذر تحديد الموقع أو حساب مسار القيادة.";
-
-        setDeliveryStatus(`${reason} يمكنك متابعة الطلب باستخدام العنوان المكتوب، وستُحدد أجرة التوصيل مع المطعم.`, true);
-        updateCartCounter();
-        updateDeliverySummary();
+    if (getLocationBtn) {
+        getLocationBtn.disabled = false;
+        getLocationBtn.textContent =
+            "📍 إعادة تحديد موقعي وحساب التوصيل";
     }
+
+    // إظهار حقل العنوان اليدوي عند فشل تحديد الموقع
+    if (deliveryAddressGroup) {
+        deliveryAddressGroup.style.display = "block";
+    }
+
+    if (deliveryFallbackMessage) {
+        deliveryFallbackMessage.style.display = "block";
+    }
+
+    const reason = error && error.message
+        ? error.message
+        : "تعذر تحديد الموقع أو حساب مسار القيادة.";
+
+    setDeliveryStatus(
+        `${reason} يمكنك كتابة عنوانك يدوياً للمتابعة.`,
+        true
+    );
+
+    updateCartCounter();
+    updateDeliverySummary();
+}
 
     // إنشاء واجهة التوصيل وربط زر الموقع، دون الحاجة إلى تعديل HTML أو CSS.
     injectDeliveryUI();
 
+    renderCart();
+
     document.addEventListener("click", function(e) {
-        const btn = e.target.closest(".add-to-cart-btn, .drink-add-btn, .small-add-to-cart-btn");
+        const btn = e.target.closest(
+            ".add-to-cart-btn, .drink-add-btn, .small-add-to-cart-btn"
+        );
+
         if (btn) {
             const card = btn.closest(".product-card, .drink-item, .small-product");
+
             if (card) {
                 addToCart({
                     id: card.dataset.id,
@@ -969,121 +1095,331 @@ function renderCart() {
         }
     });
 
+    /* =====================================================
+       FINAL INVOICE DIALOG — الفاتورة النهائية قبل واتساب
+    ===================================================== */
+
+    let invoiceDialog = null;
+
+    function ensureInvoiceDialog() {
+        if (invoiceDialog) return invoiceDialog;
+
+        invoiceDialog = document.createElement("div");
+
+        invoiceDialog.id = "invoiceDialog";
+        invoiceDialog.className = "invoice-overlay";
+        invoiceDialog.setAttribute("aria-hidden", "true");
+
+        invoiceDialog.innerHTML = `
+            <section class="invoice-dialog" role="dialog" aria-modal="true" aria-labelledby="invoiceTitle">
+                <header class="invoice-dialog-header">
+                    <div class="invoice-heading-icon">🧾</div>
+                    <div>
+                        <h2 id="invoiceTitle">الفاتورة النهائية</h2>
+                        <p>تأكد من تفاصيل طلبك قبل الإرسال</p>
+                    </div>
+                    <button type="button" class="invoice-close" id="closeInvoice" aria-label="إغلاق">✕</button>
+                </header>
+
+                <div class="invoice-dialog-content" id="invoiceContent"></div>
+
+                <footer class="invoice-dialog-actions">
+                    <button type="button" class="invoice-back-btn" id="invoiceBack">العودة لتعديل الطلب</button>
+                    <button type="button" class="invoice-confirm-btn" id="invoiceConfirm">✓ تأكيد وإرسال عبر واتساب</button>
+                </footer>
+            </section>
+        `;
+
+        document.body.appendChild(invoiceDialog);
+
+        const close = () => {
+            invoiceDialog.classList.remove("show");
+            invoiceDialog.setAttribute("aria-hidden", "true");
+        };
+
+        invoiceDialog.querySelector("#closeInvoice").addEventListener("click", close);
+        invoiceDialog.querySelector("#invoiceBack").addEventListener("click", close);
+
+        invoiceDialog.addEventListener("click", event => {
+            if (event.target === invoiceDialog) close();
+        });
+
+        invoiceDialog.querySelector("#invoiceConfirm").addEventListener("click", sendWhatsAppOrder);
+
+        return invoiceDialog;
+    }
+
+    function getOrderCustomerData() {
+        return {
+            name: document.getElementById("customerName")?.value.trim() || "",
+            phone: document.getElementById("customerPhone")?.value.trim() || "",
+            address: document.getElementById("customerAddress")?.value.trim() || "",
+            table: document.getElementById("customerTable")?.value.trim() || "",
+            notes: document.getElementById("customerNotes")?.value.trim() || "لا توجد ملاحظات"
+        };
+    }
+
+    function validateOrder() {
+        if (!cart.length) {
+            alert("سلة الطلب فارغة!");
+            return false;
+        }
+
+        const customer = getOrderCustomerData();
+
+        if (!customer.name) {
+            alert("يرجى إدخال اسم الزبون.");
+            document.getElementById("customerName")?.focus();
+            return false;
+        }
+
+        if (currentMode === "alibaba") {
+            if (!customer.phone) {
+                alert("يرجى إدخال رقم الهاتف.");
+                document.getElementById("customerPhone")?.focus();
+                return false;
+            }
+
+            if (!customer.address && customerLocationStatus !== "success") {
+                alert("يرجى إدخال عنوان التوصيل أو تحديد الموقع الجغرافي بنجاح.");
+                document.getElementById("customerAddress")?.focus();
+                return false;
+            }
+
+            if (customerLocationStatus === "pending") {
+                alert("يرجى الانتظار حتى تنتهي عملية تحديد الموقع وحساب مسار الطريق، أو إلغاء المحاولة والمتابعة بالعنوان.");
+                return false;
+            }
+
+        } else if (!customer.table) {
+            alert("يرجى إدخال رقم الطاولة.");
+            document.getElementById("customerTable")?.focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function renderInvoice() {
+        const dialog = ensureInvoiceDialog();
+        const content = dialog.querySelector("#invoiceContent");
+
+        const customer = getOrderCustomerData();
+        const subtotal = calculateSubtotal();
+        const pieces = calculateTotalPieces();
+        const alibabaFee = calculateAlibabaServiceFee(subtotal, pieces);
+
+        const finalTotal = subtotal + (
+            currentMode === "alibaba"
+                ? deliveryFee + alibabaFee
+                : 0
+        );
+
+        const itemRows = cart.map(item => `
+            <div class="invoice-item">
+                <div class="invoice-item-main">
+                    <strong>${escapeHTML(item.name)}</strong>
+                    <span>${safeNumber(item.quantity)} × ${formatPrice(item.price)}</span>
+                </div>
+
+                <strong class="invoice-item-total">
+                    ${formatPrice(safeNumber(item.price) * safeNumber(item.quantity))}
+                </strong>
+            </div>
+        `).join("");
+
+        const customerRows = currentMode === "alibaba" ? `
+            <div class="invoice-detail">
+                <span>👤 الاسم</span>
+                <strong>${escapeHTML(customer.name)}</strong>
+            </div>
+
+            <div class="invoice-detail">
+                <span>📱 الهاتف</span>
+                <strong>${escapeHTML(customer.phone)}</strong>
+            </div>
+
+            <div class="invoice-detail">
+                <span>📍 العنوان</span>
+                <strong>${escapeHTML(customer.address || "تم تحديد الموقع الجغرافي")}</strong>
+            </div>
+
+            <div class="invoice-detail">
+                <span>🗺️ الموقع</span>
+                <strong>
+                    ${customerLocationStatus === "success"
+                        ? `<a href="${escapeHTML(window.customerLocationLink)}" target="_blank" rel="noopener">فتح الموقع على الخريطة</a>`
+                        : "غير محدد — يعتمد التوصيل على العنوان المكتوب"}
+                </strong>
+            </div>
+        ` : `
+            <div class="invoice-detail">
+                <span>👤 الاسم</span>
+                <strong>${escapeHTML(customer.name)}</strong>
+            </div>
+
+            <div class="invoice-detail">
+                <span>🪑 رقم الطاولة</span>
+                <strong>${escapeHTML(customer.table)}</strong>
+            </div>
+        `;
+
+        content.innerHTML = `
+            <section class="invoice-section">
+                <h3>🍽️ تفاصيل الأصناف</h3>
+                ${itemRows}
+            </section>
+
+            <section class="invoice-section">
+                <h3>👤 بيانات ${currentMode === "alibaba" ? "التوصيل" : "الطلب"}</h3>
+                ${customerRows}
+
+                <div class="invoice-detail invoice-notes">
+                    <span>📝 الملاحظات</span>
+                    <strong>${escapeHTML(customer.notes)}</strong>
+                </div>
+            </section>
+
+            <section class="invoice-section invoice-totals">
+                <div class="invoice-detail">
+                    <span>قيمة المنتجات</span>
+                    <strong>${formatPrice(subtotal)}</strong>
+                </div>
+
+                ${currentMode === "alibaba" ? `
+                    <div class="invoice-detail">
+                        <span>🚚 رسوم التوصيل</span>
+                        <strong>${formatPrice(deliveryFee)}</strong>
+                    </div>
+
+                    <div class="invoice-detail">
+                        <span>⚙️ رسوم خدمة علي بابا</span>
+                        <strong>${formatPrice(alibabaFee)}</strong>
+                    </div>
+
+                    ${customerLocationStatus !== "success"
+                        ? `<p class="invoice-warning">⚠️ لم يتم احتساب مسافة الطريق؛ ستُؤكد أجرة التوصيل مع المطعم.</p>`
+                        : ""}
+                ` : ""}
+
+                <div class="invoice-final-total">
+                    <span>الإجمالي النهائي</span>
+                    <strong>${formatPrice(finalTotal)}</strong>
+                </div>
+            </section>
+        `;
+
+        dialog.classList.add("show");
+        dialog.setAttribute("aria-hidden", "false");
+    }
+
+    function buildWhatsAppMessage() {
+        const customer = getOrderCustomerData();
+
+        const subtotal = calculateSubtotal();
+        const pieces = calculateTotalPieces();
+        const alibabaFee = calculateAlibabaServiceFee(subtotal, pieces);
+
+        let message = "";
+
+        if (currentMode === "alibaba") {
+            const locationLink = customerLocationStatus === "success"
+                ? window.customerLocationLink
+                : "غير محدد؛ يرجى الاعتماد على العنوان المكتوب وتأكيد أجرة التوصيل مع المطعم";
+
+            const finalTotal = subtotal + deliveryFee + alibabaFee;
+
+            message = `*طلب جديد عبر منصة علي بابا*\n\n` +
+                `*اسم المطعم:* بروستد المكحل\n` +
+                `*اسم الزبون:* ${customer.name}\n` +
+                `*رقم الهاتف:* ${customer.phone}\n` +
+                `*العنوان:* ${customer.address || "تم تحديد الموقع الجغرافي"}\n` +
+                `*الموقع الجغرافي:* ${locationLink}\n` +
+                `*ملاحظات:* ${customer.notes}\n\n` +
+                `*تفاصيل الطلب:*\n`;
+
+            cart.forEach((item, index) => {
+                message += `${index + 1}. ${item.name} × ${item.quantity} — ${(item.price * item.quantity).toLocaleString("ar")} ل.س\n`;
+            });
+
+            message += `\n------------------\n` +
+                `🛒 قيمة المنتجات: *${subtotal.toLocaleString("ar")} ل.س*\n` +
+                `🚚 أجرة التوصيل المحسوبة: *${deliveryFee.toLocaleString("ar")} ل.س*\n` +
+                `${customerLocationStatus === "success" ? "" : "⚠️ لم يتم احتساب أجرة التوصيل عبر مسار قيادة؛ يرجى تأكيدها مع المطعم.\n"}` +
+                `⚙️ رسوم خدمة علي بابا: *${alibabaFee.toLocaleString("ar")} ل.س*\n` +
+                `💰 الإجمالي النهائي: *${finalTotal.toLocaleString("ar")} ل.س*`;
+
+            return {
+                phone: ALIBABA_WHATSAPP,
+                message
+            };
+        }
+
+        message = `*طلب محلي (صالة)*\n\n` +
+            `*اسم المطعم:* بروستد المكحل\n` +
+            `*اسم الزبون:* ${customer.name}\n` +
+            `*رقم الطاولة:* ${customer.table}\n` +
+            `*ملاحظات:* ${customer.notes}\n\n` +
+            `*تفاصيل الطلب:*\n`;
+
+        cart.forEach((item, index) => {
+            message += `${index + 1}. ${item.name} × ${item.quantity} — ${(item.price * item.quantity).toLocaleString("ar")} ل.س\n`;
+        });
+
+        message += `\n------------------\n💰 الإجمالي النهائي: *${subtotal.toLocaleString("ar")} ل.س*`;
+
+        return {
+            phone: RESTAURANT_WHATSAPP,
+            message
+        };
+    }
+
+    function sendWhatsAppOrder() {
+        if (!validateOrder()) return;
+
+        const { phone, message } = buildWhatsAppMessage();
+
+        const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+        window.open(whatsappUrl, "_blank");
+
+        if (invoiceDialog) {
+            invoiceDialog.classList.remove("show");
+            invoiceDialog.setAttribute("aria-hidden", "true");
+        }
+
+        trackEvent("purchase_intent", {
+            currency: "SYP",
+            value: calculateSubtotal(),
+            items_count: calculateTotalPieces(),
+            order_mode: currentMode
+        });
+    }
+
     if (whatsappOrder) {
         whatsappOrder.addEventListener("click", function () {
-            if (cart.length === 0) {
-                alert("سلة الطلب فارغة!");
-                return;
-            }
-
-            const customerName = document.getElementById("customerName")?.value.trim() || "";
-            if (!customerName) {
-                alert("يرجى إدخال اسم الزبون.");
-                return;
-            }
-
-            const subtotal = calculateSubtotal();
-            const totalPieces = calculateTotalPieces();
-            const alibabaFee = calculateAlibabaServiceFee(subtotal, totalPieces);
-            const customerNotes = document.getElementById("customerNotes")?.value.trim() || "لا توجد ملاحظات";
-
-            let whatsappMessage = "";
-            let targetPhone = "";
-
-            if (currentMode === 'alibaba') {
-                targetPhone = ALIBABA_WHATSAPP;
-                const customerPhone = document.getElementById("customerPhone")?.value.trim() || "";
-                const customerAddress = document.getElementById("customerAddress")?.value.trim() || "";
-
-                if (!customerPhone) {
-                    alert("يرجى إدخال رقم الهاتف.");
-                    document.getElementById("customerPhone")?.focus();
-                    return;
-                }
-
-                if (!customerAddress) {
-                    alert("يرجى إدخال عنوان التوصيل.");
-                    document.getElementById("customerAddress")?.focus();
-                    return;
-                }
-
-                if (!customerLocationAttempted || customerLocationStatus === "not_attempted") {
-                    alert("يرجى الضغط على زر تحديد الموقع مرة واحدة على الأقل. إذا تعذر تحديد الموقع يمكنك متابعة الطلب بالعنوان المكتوب.");
-                    return;
-                }
-
-                if (customerLocationStatus === "pending") {
-                    alert("يرجى الانتظار حتى تنتهي عملية تحديد الموقع وحساب مسار الطريق.");
-                    return;
-                }
-
-                const locationLink = customerLocationStatus === "success"
-                    ? window.customerLocationLink
-                    : (window.customerLocationLink !== "غير محدد"
-                        ? `${window.customerLocationLink} (تعذر حساب مسار الطريق؛ يرجى تأكيد أجرة التوصيل)`
-                        : "تعذر تحديد الموقع الجغرافي؛ يرجى الاعتماد على العنوان المكتوب");
-
-                let finalTotal = subtotal + deliveryFee + alibabaFee;
-
-                whatsappMessage = `*طلب جديد عبر منصة علي بابا*\n\n` +
-                    `*اسم المطعم:* بروستد المكحل\n` +
-                    `*اسم الزبون:* ${customerName}\n` +
-                    `*رقم الهاتف:* ${customerPhone}\n` +
-                    `*العنوان:* ${customerAddress}\n` +
-                    `*الموقع الجغرافي:* ${locationLink}\n` +
-                    `*ملاحظات:* ${customerNotes}\n\n` +
-                    `*تفاصيل الطلب:*\n`;
-
-                cart.forEach((item, index) => {
-                    whatsappMessage += `${index + 1}. ${item.name} × ${item.quantity} - ${(item.price).toLocaleString()} ل.س\n`;
-                });
-
-                whatsappMessage += `\n------------------\n` +
-                    `🛒 قيمة المنتجات: *${subtotal.toLocaleString()} ل.س*\n` +
-                    `🚚 أجرة التوصيل المحسوبة: *${deliveryFee.toLocaleString()} ل.س*\n` +
-                    `${customerLocationStatus === "success" ? "" : "⚠️ لم يتم احتساب أجرة التوصيل عبر مسار قيادة؛ يرجى تأكيدها مع المطعم.\n"}` +
-                    `⚙️ رسوم خدمة علي بابا: *${alibabaFee.toLocaleString()} ل.س*\n` +
-                    `💰 الإجمالي النهائي: *${finalTotal.toLocaleString()} ل.س*`;
-
-            } else {
-                targetPhone = RESTAURANT_WHATSAPP;
-                const customerTable = document.getElementById("customerTable")?.value.trim() || "";
-
-                if (!customerTable) {
-                    alert("يرجى إدخال رقم الطاولة.");
-                    return;
-                }
-
-                whatsappMessage = `*طلب محلي (صالة)*\n\n` +
-                    `*اسم المطعم:* بروستد المكحل\n` +
-                    `*اسم الزبون:* ${customerName}\n` +
-                    `*رقم الطاولة:* ${customerTable}\n` +
-                    `*ملاحظات:* ${customerNotes}\n\n` +
-                    `*تفاصيل الطلب:*\n`;
-
-                cart.forEach((item, index) => {
-                    whatsappMessage += `${index + 1}. ${item.name} × ${item.quantity} - ${(item.price ).toLocaleString()} ل.س\n`;
-                });
-
-                whatsappMessage += `\n------------------\n` +
-                    `💰 الإجمالي النهائي: *${subtotal.toLocaleString()} ل.س*`;
-            }
-
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-            const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodedMessage}`;
-            window.open(whatsappUrl, '_blank');
+            if (!validateOrder()) return;
+            renderInvoice();
         });
     }
 
     if (floatingCart && cartOverlay) {
-        floatingCart.addEventListener("click", () => cartOverlay.classList.add("show"));
+        floatingCart.addEventListener("click", () => {
+            cartOverlay.classList.add("show");
+        });
     }
+
     if (closeCart && cartOverlay) {
-        closeCart.addEventListener("click", () => cartOverlay.classList.remove("show"));
+        closeCart.addEventListener("click", () => {
+            cartOverlay.classList.remove("show");
+        });
     }
+
     if (cartOverlay) {
         cartOverlay.addEventListener("click", (e) => {
-            if (e.target === cartOverlay) cartOverlay.classList.remove("show");
+            if (e.target === cartOverlay) {
+                cartOverlay.classList.remove("show");
+            }
         });
     }
 

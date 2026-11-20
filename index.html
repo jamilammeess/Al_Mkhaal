@@ -13,11 +13,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#7C0434">
-
+    <meta name="description" content="منيو بروستد المكحل - الوجبات والسندويش والعروض">
     <title>ali_baba | مطعم المكحل</title>
 
     <link rel="stylesheet" href="css/style.css">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
@@ -27,7 +26,7 @@
 
 <header class="menu-header">
     <div class="brand">
-        <img src="images/logo.png" alt="مولانا برغر" class="brand-logo">
+        <img src="images/logo.png" alt="بروستد المكحل" class="brand-logo">
         <div class="brand-text">
             <h1>بروستد المكحل</h1>
             <span>Al_MKHAL_CHIKEN</span>
@@ -52,29 +51,25 @@
 
     <div class="hero-image">
         <div class="hero-glow"></div>
-        <img src="images/hero_logo.png" alt="Mawlana Burger">
+        <img src="images/hero_logo.png" alt="بروستد المكحل">
     </div>
 
     <div class="hero-decoration">ِAL_MKHAAL</div>
 </section>
 
-<!-- شريط الفلترة والأقسام (تم جعل العروض في المرتبة الأولى) -->
 <nav class="categories">
     <a href="#offers" class="category active">
         <span class="category-icon">🔥</span>
         <span>العروض</span>
     </a>
-
     <a href="#burgers" class="category">
         <span class="category-icon">🍟</span>
         <span>الوجبات</span>
     </a>
-
     <a href="#meals" class="category">
         <span class="category-icon">🌯</span>
         <span>السندويش</span>
     </a>
-
     <a href="#drinks" class="category">
         <span class="category-icon">🥤</span>
         <span>المشروبات</span>
@@ -83,7 +78,6 @@
 
 <main class="menu-container">
 
-    <!-- قسم عروض علي بابا المميزة (أول قسم يتم عرضه) -->
     <section class="menu-section" id="offers">
         <div class="section-heading">
             <div>
@@ -92,7 +86,6 @@
             </div>
             <span class="section-number">00</span>
         </div>
-
         <div class="products-grid" id="offersGrid"></div>
     </section>
 
@@ -104,7 +97,6 @@
             </div>
             <span class="section-number">01</span>
         </div>
-
         <div class="products-grid" id="burgersGrid"></div>
     </section>
 
@@ -116,7 +108,6 @@
             </div>
             <span class="section-number">02</span>
         </div>
-
         <div class="products-grid" id="mealsGrid"></div>
     </section>
 
@@ -128,20 +119,18 @@
             </div>
             <span class="section-number">04</span>
         </div>
-
         <div class="drinks-grid" id="drinksGrid"></div>
     </section>
 
 </main>
 
-<button class="floating-cart" id="floatingCart" type="button" aria-label="فتح سلة الطلب">
+<button class="floating-cart is-hidden" id="floatingCart" type="button"
+        aria-label="فتح سلة الطلب" aria-hidden="true" tabindex="-1">
     <span class="cart-icon">🛒</span>
-
     <div class="cart-button-text">
         <span>طلبك</span>
         <small id="cartCount">0 أصناف</small>
     </div>
-
     <span class="cart-count-badge" id="cartBadge">0</span>
 </button>
 
@@ -150,27 +139,13 @@
 
         <div class="cart-header">
             <div>
-                <span class="cart-title-icon">🛒</span>
-                <div>
-                    <h2>طلبك</h2>
-                    <p>راجع طلبك قبل الإرسال</p>
-                </div>
+                <h2>مراجعة الطلب</h2>
             </div>
-
             <button class="close-cart" id="closeCart" type="button" aria-label="إغلاق السلة">✕</button>
         </div>
 
         <div class="order-review-section">
-            <div class="order-review-header">
-                <div class="order-review-icon">🛒</div>
-                <div>
-                    <h3>مراجعة الطلب</h3>
-                    <p>راجع الأصناف والكميات قبل إتمام الطلب</p>
-                </div>
-            </div>
-
             <div class="cart-items" id="cartItems"></div>
-
             <div class="cart-empty" id="cartEmpty">
                 <div class="cart-empty-icon">🛒</div>
                 <h3>سلة الطلب فارغة</h3>
@@ -184,35 +159,32 @@
 
             <div class="form-group">
                 <label for="customerName">👤 الاسم</label>
-                <input type="text" id="customerName" placeholder="اكتب اسمك">
+                <input type="text" id="customerName" placeholder="اكتب اسمك" autocomplete="name">
             </div>
 
-            <!-- حقل رقم الطاولة (خاص بالوضع المباشر للمطعم) -->
             <div class="form-group" id="tableNumberGroup" style="display: none;">
                 <label for="customerTable">🪑 رقم الطاولة</label>
                 <input type="text" id="customerTable" placeholder="مثال: الطاولة رقم 5">
             </div>
 
-            <!-- حقول التوصيل والموقع (خاصة بوضع منصة علي بابا) -->
             <div id="alibabaDeliveryFields" style="display: none;">
                 <div class="form-group">
                     <label for="customerPhone">📱 رقم الهاتف</label>
-                    <input type="tel" id="customerPhone" placeholder="مثال: 09XXXXXXXX">
+                    <input type="tel" id="customerPhone" placeholder="مثال: 09XXXXXXXX" autocomplete="tel">
                 </div>
 
                 <div class="form-group">
-                    <label for="customerAddress">📍 العنوان</label>
+                    <label for="customerAddress">📍 عنوان التوصيل</label>
                     <input type="text" id="customerAddress" placeholder="اكتب عنوان التوصيل">
                 </div>
 
                 <div class="form-group">
-                    <button type="button" id="getLocationBtn" class="location-btn" style="width: 100%; padding: 10px; background: #f0f0f0; border: 1px dashed #ccc; border-radius: 8px; cursor: pointer;">
+                    <button type="button" id="getLocationBtn" class="location-btn">
                         📍 تحديد الموقع الجغرافي الحالي
                     </button>
                 </div>
             </div>
 
-            <!-- ملاحظات الطلب (تظهر في كلا الوضعين) -->
             <div class="form-group">
                 <label for="customerNotes">📝 ملاحظات على الطلب</label>
                 <textarea id="customerNotes" placeholder="مثال: بدون بصل، صوص إضافي..."></textarea>
@@ -220,29 +192,29 @@
         </div>
 
         <div class="cart-footer">
-            <div class="cart-summary-breakdown" style="width: 100%; margin-bottom: 10px; font-size: 14px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <div class="cart-summary-breakdown">
+                <div class="summary-row">
                     <span>قيمة المنتجات:</span>
                     <span id="cartSubtotal">0 ل.س</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; display: none;" id="deliveryFeeRow">
+                <div class="summary-row" id="deliveryFeeRow" style="display: none;">
                     <span>رسوم التوصيل:</span>
                     <span id="cartDeliveryFee">0 ل.س</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; display: none;" id="alibabaFeeRow">
+                <div class="summary-row" id="alibabaFeeRow" style="display: none;">
                     <span>رسوم خدمة علي بابا:</span>
                     <span id="cartAlibabaFee">0 ل.س</span>
                 </div>
             </div>
 
-            <div class="cart-total" style="border-top: 1px solid #eee; padding-top: 8px; width: 100%; display: flex; justify-content: space-between;">
+            <div class="cart-total">
                 <span>الإجمالي النهائي</span>
                 <strong id="cartTotal">0 ل.س</strong>
             </div>
 
-            <button class="whatsapp-order-btn" id="whatsappOrder" type="button" style="width: 100%; margin-top: 10px;">
-                <span>📱</span>
-                إتمام الطلب عبر واتساب
+            <button class="whatsapp-order-btn" id="whatsappOrder" type="button">
+                <span>🧾</span>
+                مراجعة الفاتورة والمتابعة
             </button>
         </div>
     </div>
@@ -250,7 +222,7 @@
 
 <footer class="menu-footer">
     <div class="footer-brand">
-        <img src="images/logo2.png" alt="مولانا برغر">
+        <img src="images/logo2.png" alt="علي بابا">
         <div>
             <strong>علي بابا</strong>
             <span>ALI_BABA</span>
@@ -269,6 +241,5 @@
 </footer>
 
 <script src="js/cart.js"></script>
-
 </body>
 </html>
